@@ -1,0 +1,107 @@
+<HTML>
+  <HEAD>
+    <title>Ext.ux.UploadManager</title>
+    
+    <!-- ExtJS common css -->
+    <link rel="stylesheet" type="text/css" href="http://192.168.1.31:9000/apps/main/static/js/ext-3.1.0/resources/css/ext-all.css" /> 
+    <script type="text/javascript" src="http://192.168.1.31:9000/apps/main/static/js/ext-3.1.0/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://192.168.1.31:9000/apps/main/static/js/ext-3.1.0/ext-all-debug.js"></script>
+ 
+ 
+     <script type="text/javascript" src="./js/swfupload.js"></script>
+     <script type="text/javascript" src="./js/swfupload.queue.js"></script>
+     <script type="text/javascript" src="./js/swfupload.cookies.js"></script>
+     <script type="text/javascript" src="./js/Ext.ux.UploadManager.js"></script>
+     
+    
+    <script language="javascript">
+    
+    
+    Ext.onReady(function() {
+
+            
+        var uploader = new Ext.ux.UploadManager({
+            uploadUrl:'/apps/test/upload'
+        });
+          
+        var w = new Ext.Window({
+            width:800
+            ,height:500
+            ,layout:'fit'
+            ,title:'upload'
+            ,items:uploader
+        });
+     
+        w.show();
+     
+        // example outside button
+         var w2 = new Ext.Window({
+            width:300
+            ,height:200
+            ,x:10
+            ,y:10
+            ,layout:'fit'
+            ,title:'uploadbutton'
+            ,items:[
+                uploader.getSwfUploaderButton('click from outside')
+            ]
+        })
+        
+         
+        w2.show();
+          
+
+         // example external droppable area
+         var w3 = new Ext.Window({
+            width:300
+            ,height:200
+            ,x:10
+            ,y:220
+            ,layout:'fit'
+            ,title:'dropzone'
+        });
+        w3.on('show', function() {
+            uploader.makeDroppable(w3.el);
+        }, this);
+      
+       w3.show();
+       
+       
+         // another independant uplaoder
+         
+         var uploader2 = new Ext.ux.UploadManager({
+            uploadUrl:'/apps/test/upload'
+        });
+        
+         var w4 = new Ext.Window({
+            width:300
+            ,height:200
+            ,x:10
+            ,y:500
+            ,layout:'fit'
+            ,title:'uploader2'
+            ,items:uploader2
+        });
+   
+       w4.show();
+       
+
+        
+    });
+      
+    
+    
+    </script>
+ 
+  </HEAD>
+
+  <BODY>
+
+
+	<div id="content">
+ 
+    </div>
+    
+  </BODY>
+
+</HTML>
