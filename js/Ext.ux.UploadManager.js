@@ -184,7 +184,8 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
         local_queue_item.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
         local_queue_item.xhr.setRequestHeader('X-File-Name', local_queue_item.file.name);
         local_queue_item.xhr.setRequestHeader('X-File-Size', local_queue_item.file.size);
-        local_queue_item.xhr.setRequestHeader('User-Agent', 'XMLHttpRequest');
+        //local_queue_item.xhr.setRequestHeader('User-Agent', 'XMLHttpRequest');
+        local_queue_item.xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         local_queue_item.xhr.send(file);
     }   
     
