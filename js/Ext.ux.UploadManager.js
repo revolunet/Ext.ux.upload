@@ -13,7 +13,7 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
     ,swfUploadConfig:{
         showToolbarButton:true
     }
-    ,maxFiles:10    
+    ,maxFiles:10
     ,allowedFilesTypes:'*.swf; *.flv; *.avi; *.mp4; *.jpg; *.png; *.gif; *.pdf'
     ,maxTotalSize:100000
     ,maxFileSize:10000
@@ -30,7 +30,7 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
             ,items:[{border:false, html:'drop files heres'}]
         });
         this.items = [this.queuePanel]
-        
+
         // returns a new button linked to this uploadPanel (flash button embedded)
         this.getSwfUploaderButton = function(config) {
             var base_conf = {
@@ -63,7 +63,7 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
                             ,fn:function(btn, file) {
                                // console.log('dialogComplete', btn);
                                }
-                        
+
                         }
                         ,'fileUploadComplete':{
                             scope:this
@@ -76,15 +76,15 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
                                     }
                             }
                         }
-                    
+
                     }
                 };
             Ext.apply(base_conf, config);
-            var b = new Ext.ux.SwfUploaderButton(base_conf);  
+            var b = new Ext.ux.SwfUploaderButton(base_conf);
             return b;
         }
-     
-        
+
+
          if (this.useSwfUpload && this.swfUploadConfig.showToolbarButton) {
                 // add some tests buttons
                 this.tbar = [
@@ -95,10 +95,10 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
                      ]}}
                     ];
          }
-         
-         
+
+
        Ext.ux.UploadManager.superclass.initComponent.apply(this, arguments);
-       
+
          if (this.useHtml5) {
             // enable html5 drop + upload for FF and chrome
             this.queuePanel.on(
@@ -108,27 +108,27 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
                     this.makeDroppable(this.queuePanel.body);
              }, this);
         }
-         
+
     },
     // make a linked droppable zone from given el
     makeDroppable: function(el) {
          el.on('dragover', function(e) {
             var tgt = Ext.get(e.target);
-            tgt.setStyle('background-color', this.html5Config.dragOverColor); 
+            tgt.setStyle('background-color', this.html5Config.dragOverColor);
             e.stopPropagation();
             e.preventDefault();
             return;
         }, this);
         el.on('dragexit', function(e) {
             var tgt = Ext.get(e.target);
-            tgt.setStyle('background-color', 'white'); 
+            tgt.setStyle('background-color', 'white');
             e.stopPropagation();
             e.preventDefault();
             return;
         }, this);
         el.on('drop', function(e) {
             var tgt = Ext.get(e.target);
-            tgt.setStyle('background-color', 'white'); 
+            tgt.setStyle('background-color', 'white');
             this.html5_dropped(e.browserEvent);
             e.stopPropagation();
             e.preventDefault();
@@ -145,7 +145,7 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
                 this.html5_uploadFile(file, local_id);
             }
     },
-    // private : uploads a single html5 file 
+    // private : uploads a single html5 file
     html5_uploadFile:function(file, local_id) {
          local_queue_item = this.queue[local_id] ;
          local_queue_item.xhr = new XMLHttpRequest();
@@ -156,7 +156,7 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
                 this.item.updateFileProgress(event.loaded);
             }
         }, false);
-            
+
         local_queue_item.xhr.upload.addEventListener("load", function(event) {
             succes = false;
             try {
@@ -171,10 +171,10 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
             else {
                 this.item.onError();
             }
-                
+
 
         }, false);
-        
+
         local_queue_item.xhr.upload.addEventListener("error", function(evt) {
             console.log('error', this,  evt, (evt.toString()));
             this.item.onError();
@@ -187,8 +187,8 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
         //local_queue_item.xhr.setRequestHeader('User-Agent', 'XMLHttpRequest');
         local_queue_item.xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         local_queue_item.xhr.send(file);
-    }   
-    
+    }
+
     // add a given file 'from drop or flash' to the internal upload list
     // add a progressbar to the queuePanel
     ,addQueue: function(file, id) {
@@ -245,19 +245,19 @@ Ext.ux.UploadManager = Ext.extend(Ext.Panel, {
                     this.getRemainingtime();
             }
           });
-          
+
          // get default label
          p.text = p.getLabel();
-         
+
          // insert a top
          this.queuePanel.insert(0, p);
-         
+
          //store internaly
-         this.queue[int_id] = p;      
+         this.queue[int_id] = p;
 
          //refresh view
          this.queuePanel.doLayout();
-         
+
          // return internal id
          return int_id;
     }
@@ -273,10 +273,10 @@ Ext.ux.SwfUploaderButton= Ext.extend(Ext.Button, {
   ,maxFileSize:10000
   ,maxFiles:10
   ,initComponent:function() {
-    
+
     this.containerID = "swf-item-ctn"+this.id;
     this.buttonID = "swf-item-btn"+this.id;
-    
+
     Ext.ux.SwfUploaderButton.superclass.initComponent.apply(this, arguments);
 
     this.on({
@@ -370,7 +370,8 @@ Ext.ux.SwfUploaderButton= Ext.extend(Ext.Button, {
     // the default SWFupload config
     ,getSwfConfig:function() {
         return {
-          flash_url:"/apps/swfuploader/static/swfupload.swf"
+          //flash_url:"/apps/swfuploader/static/swfupload.swf"
+	  flash_url:"swfupload.swf"
           ,movieName:"easy-swf-upload"
           ,upload_url:this.uploadUrl
           ,file_post_name:"Filedata"
