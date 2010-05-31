@@ -1,36 +1,36 @@
 /*
  * Tine 2.0
- * 
+ *
  * @license     http://www.gnu.org/licenses/agpl.html AGPL Version 3
  * @author      Cornelius Weiss <c.weiss@metaways.de>
  * @copyright   Copyright (c) 2007-2008 Metaways Infosystems GmbH (http://www.metaways.de)
  * @version     $Id$
  *
  */
- 
+
 Ext.namespace('Ext.ux.file');
 
 /**
  * a simple file uploader
- * 
+ *
  * objects of this class represent a single file uplaod
  */
 Ext.ux.file.Uploader = function(config) {
     Ext.apply(this, config);
 
     Ext.ux.file.Uploader.superclass.constructor.apply(this, arguments);
-    
+
     this.addEvents(
         /**
          * @event uploadcomplete
-         * Fires when the upload was done successfully 
+         * Fires when the upload was done successfully
          * @param {Ext.ux.file.Uploader} this
          * @param {Ext.Record} Ext.ux.file.Uploader.file
          */
          'uploadcomplete',
         /**
          * @event uploadfailure
-         * Fires when the upload failed 
+         * Fires when the upload failed
          * @param {Ext.ux.file.Uploader} this
          * @param {Ext.Record} Ext.ux.file.Uploader.file
          */
@@ -45,7 +45,7 @@ Ext.ux.file.Uploader = function(config) {
          'uploadprogress'
     );
 };
- 
+
 Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
     /**
      * @cfg {Int} maxFileSize the maximum file size in bytes
@@ -60,8 +60,8 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
      * a file selector
      */
     fileSelector: null,
-    
-    
+
+
     /**
      * creates a form where the upload takes place in
      * @private
@@ -82,10 +82,10 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
         });
         return form;
     },
-    
+
     /**
      * perform the upload
-     * 
+     *
      * @param  {FILE} file to upload (optional for html5 uploads)
      * @return {Ext.Record} Ext.ux.file.Uploader.file
      */
@@ -99,19 +99,19 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
             return this.html4upload();
         }
     },
-    
+
     /**
      * 2010-01-26 Current Browsers implemetation state of:
      *  http://www.w3.org/TR/FileAPI
-     *  
+     *
      *  Interface: File | Blob | FileReader | FileReaderSync | FileError
-     *  FF       : yes  | no   | no         | no             | no       
-     *  safari   : yes  | no   | no         | no             | no       
-     *  chrome   : yes  | no   | no         | no             | no       
-     *  
+     *  FF       : yes  | no   | no         | no             | no
+     *  safari   : yes  | no   | no         | no             | no
+     *  chrome   : yes  | no   | no         | no             | no
+     *
      *  => no json rpc style upload possible
      *  => no chunked uploads posible
-     *  
+     *
      *  But all of them implement XMLHttpRequest Level 2:
      *   http://www.w3.org/TR/XMLHttpRequest2/
      *  => the only way of uploading is using the XMLHttpRequest Level 2.
@@ -125,7 +125,7 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
             progress: 0,
             input: this.getInput()
         });
-        
+
         var conn = new Ext.data.Connection({
             disableCaching: true,
             method: 'HTTP',
@@ -136,7 +136,7 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
                 "X-Requested-With"      : "XMLHttpRequest"
             }
         });
-        
+
         var transaction = conn.request({
             headers: {
                 "X-File-Name"           : fileRecord.get('name'),
@@ -148,25 +148,25 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
             failure: this.onUploadFail.createDelegate(this, [fileRecord], true),
             fileRecord: fileRecord
         });
-        
+
         var upload = transaction.conn.upload;
-        
+
         //upload['onloadstart'] = this.onLoadStart.createDelegate(this, [fileRecord], true);
         upload['onprogress'] = this.onUploadProgress.createDelegate(this, [fileRecord], true);
-        
+
         return fileRecord;
     },
-    
+
     /**
      * uploads in a html4 fashion
-     * 
+     *
      * @return {Ext.data.Connection}
      */
     html4upload: function() {
         var form = this.createForm();
         var input = this.getInput();
         form.appendChild(input);
-        
+
         var fileRecord = new Ext.ux.file.Uploader.file({
             name: this.fileSelector.getFileName(),
             size: 0,
@@ -176,7 +176,7 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
             status: 'uploading',
             progress: 0
         });
-        
+
         Ext.Ajax.request({
             fileRecord: fileRecord,
             isUpload: true,
@@ -189,22 +189,22 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
                 requestType: 'HTTP'
             }
         });
-        
+
         return fileRecord;
     },
-    
+
     /*
     onLoadStart: function(e, fileRecord) {
         this.fireEvent('loadstart', this, fileRecord, e);
     },
     */
-    
+
     onUploadProgress: function(e, fileRecord) {
         var percent = Math.round(e.loaded / e.total * 100);
         fileRecord.set('progress', percent);
         this.fireEvent('uploadprogress', this, fileRecord, e);
     },
-    
+
     /**
      * executed if a file got uploaded successfully
      */
@@ -224,22 +224,22 @@ Ext.extend(Ext.ux.file.Uploader, Ext.util.Observable, {
             this.fireEvent('uploadcomplete', this, fileRecord);
         }
     },
-    
+
     /**
      * executed if a file upload failed
      */
     onUploadFail: function(response, options, fileRecord) {
         fileRecord.set('status', 'failure');
-        
+
         this.fireEvent('uploadfailure', this, fileRecord);
     },
-    
+
     // private
     getInput: function() {
         if (! this.input) {
             this.input = this.fileSelector.detachInputFile();
         }
-        
+
         return this.input;
     }
 });

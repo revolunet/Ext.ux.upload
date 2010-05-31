@@ -72,7 +72,7 @@ Ext.onReady(function(){
             overClass:'x-view-over',
             itemSelector:'div.thumb-wrap',
             emptyText: 'No images to display',
-
+	    uploadLogPanelTarget:true,
 	    plugins:[uploader],
 //	    plugins:[browser],
 

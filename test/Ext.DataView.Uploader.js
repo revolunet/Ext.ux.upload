@@ -5,17 +5,24 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Fri May 28 20:46:42 2010 Gary van Woerkens
+** Last update Mon May 31 21:53:51 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux');
+
+/***************************************************************************************
+ ***************************************************************************************
+ **** UPLOADER *************************************************************************
+ ***************************************************************************************
+ ***************************************************************************************/
 
 Ext.ux.Uploader = function(cfg) {
 
   cfg = Ext.applyIf(cfg || {}, {
     allowedFileTypes:"*.*"
     ,uploadUrl:"/dev/upload/test/upload.php"
-    ,maxFileSize:10000
+    ,maxFileSize:100000000000
+    ,maxTotalSize:100000000000
     ,maxFiles:10
     ,buttonImageUrl:"/apps/whiteboard/static/img/button_upload.png" // needed for chrome
   });
@@ -25,8 +32,7 @@ Ext.ux.Uploader = function(cfg) {
 
   this.init = function(cmp) {
     cmp.getUploader = getUploader.createDelegate(this);
-    setUploadProcess(cmp);
-    console.log("Init", this, arguments, cfg);
+    setUploadProcess.call(this, cmp);
   };
 
   var getUploader = function() {
@@ -34,6 +40,7 @@ Ext.ux.Uploader = function(cfg) {
   };
 
   var setUploadProcess = function(cmp) {
+    console.log('setUploadProcess', this, arguments);
     var xtype = cmp.getXType();
     if (isTrigger(xtype) !== false) {
       cmp.on({
@@ -43,7 +50,7 @@ Ext.ux.Uploader = function(cfg) {
       });
     } else if (isDropZone(xtype) !== false) {
       cmp.on({
-	scope:cmp
+	scope:this
 	,render:onDropZoneRender
       });
     }
@@ -62,26 +69,93 @@ Ext.ux.Uploader = function(cfg) {
    * ****************************************/
 
   var onDropZoneRender = function(cmp) {
+    console.log('onDropZoneRender', this, arguments);
     var el = cmp.getEl();
-    el.on('dragover', function(e) {
-      e.stopPropagation();
-      e.preventDefault();
-      // prevents drop in FF ;-(
-      if (! Ext.isGecko) {
-        e.browserEvent.dataTransfer.dropEffect = 'copy';
+    if (cmp.uploadLogPanelTarget === true)
+      this.boundEl = el;
+    el.on({
+      scope:cmp
+      ,dragover:function(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	// prevents drop in FF ;-(
+	if (!Ext.isGecko) {
+	  e.browserEvent.dataTransfer.dropEffect = 'copy';
+	}
       }
-    }, this);
+      ,drop:function(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	var dt = e.browserEvent.dataTransfer;
+	var files = dt.files;
+	var target = Ext.get(e.target);
+	if (files.length) {
+	  cmp.getUploader().getLogPanel().show({
+	    fileCount:files.length
+	  });
+	}
+	startUpload.call(cmp, files);
+      }
+    });
+  };
 
-    el.on('drop', function(e) {
-      e.stopPropagation();
-      e.preventDefault();
-      var dt = e.browserEvent.dataTransfer;
-      var files = dt.files;
-      var target = Ext.get(e.target);
-      console.log("onDrop", files);
-      //this.onInputFileChange(null, null, null, files);
+  var startUpload = function(files) {
+    Ext.each(files, function(file, index) {
+      this.getUploader().getLogPanel().add(Ext.apply(file, {id:Ext.id()}));
+      var xhr = new XMLHttpRequest();
+      console.log("CONN:", xhr.upload);
+      xhr.upload.addEventListener("loadstart", uploadStart.createDelegate(this), false);
+      xhr.upload.addEventListener("load", uploadLoad.createDelegate(this, [file], 0), false);
+      xhr.upload.addEventListener("error", uploadError.createDelegate(this), false);
+      xhr.upload.addEventListener("progress", uploadProgress.createDelegate(this, [file], 0), false);
+      xhr.open("POST", cfg.uploadUrl , true);
+      xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+      xhr.setRequestHeader('X-File-Name', file.name);
+      xhr.setRequestHeader('X-File-Size', file.size);
+      xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+      xhr.send(file);
     }, this);
+  };
 
+  /******************************************
+   * HTML 5 UPLOAD HANDLERS *****************
+   * ****************************************/
+
+  var uploadStart = function() {
+    console.log('uploadStart', this, arguments);
+  };
+
+  var uploadError = function(event) {
+    console.log('error', this,  evt, (evt.toString()));
+    //this.item.onError();
+  };
+
+  var uploadProgress = function(file, event) {
+    console.log('uploadProgress', this, arguments);
+    if (event.lengthComputable) {
+      this.getUploader().getLogPanel().updateProgess(file, event.loaded/event.total);
+      //this.item.updateFileProgress(event.loaded);
+    }
+  };
+
+  var uploadLoad = function(file, event) {
+    console.log('load', this, arguments);
+    this.getUploader().getLogPanel().updateProgess(file, event.loaded/event.total);
+    /*
+     succes = false;
+     try {
+     succes = (this.item.xhr.status == 200) ;
+     }
+     catch (e) {
+     succes = false;
+     }
+     if (succes) {
+     this.item.onComplete();
+     }
+     else {
+     this.item.onError();
+     }
+     */
   };
 
   /******************************************
@@ -92,19 +166,17 @@ Ext.ux.Uploader = function(cfg) {
     var el = Ext.DomHelper.append(cmp.getEl(), {id:"firstdiv", children:[{
       children:[{id:Ext.id()}]
     }]}, true);
-    cmp.swfCtn = el.first(),
+    cmp.swfCtn = el.first();
     cmp.swfWrp = cmp.swfCtn.first();
     Ext.DomHelper.applyStyles(cmp.swfCtn, {
       position:"absolute"
       ,cursor:"pointer"
     });
     var config = getSwfConfig.call(cmp);
-    console.log("onTriggerRender", this, arguments, config);
     cmp.swfUploader = new SWFUpload(config);
   };
 
   var getSwfConfig = function() {
-    console.log("getSwfConfig", this, arguments);
     return {
       flash_url:"../swfupload.swf"
       ,movieName:"easy-swf-upload"
@@ -115,10 +187,11 @@ Ext.ux.Uploader = function(cfg) {
       ,file_upload_limit:cfg.maxFiles
       ,file_queue_limit:cfg.maxFiles
       ,button_window_mode:Ext.isChrome?'window':'transparent'
-      ,debug:false
+      ,debug:true
       ,post_params:{}
       ,scope:this
       ,button_placeholder_id:this.swfWrp.id
+      ,file_dialog_start_handler:swfUploaderDialogOpen.createDelegate(this)
       ,swfupload_loaded_handler:swfUploaderLoaded.createDelegate(this)
       ,file_dialog_complete_handler:swfUploaderDialogComplete.createDelegate(this)
       ,file_queue_error_handler:swfUploaderFileQueueError.createDelegate(this)
@@ -127,19 +200,14 @@ Ext.ux.Uploader = function(cfg) {
       ,upload_error_handler:swfUploaderFileUploadError.createDelegate(this)
       ,upload_complete_handler:swfUploaderFileUploadComplete.createDelegate(this)
       ,queue_complete_handler:swfUploaderFileQueueComplete.createDelegate(this)
-      /*
-      ,file_dialog_start_handler:this.dialogOpen.createDelegate(this)
-       */
     };
   };
 
   var onTriggerResize = function() {
-    console.log("onTriggerResize", this, arguments);
     var height = this.el.getHeight();
     var width = this.el.getWidth();
     this.swfCtn.setXY(this.el.getXY());
     this.swfCtn.setSize(width, height);
-    console.log('resize swf', width, height, this.swfUploader.isLoaded);
     if (this.swfUploader.isLoaded)  {
       if (Ext.isChrome && cfg.buttonImageUrl) {
         this.swfUploader.setButtonImageURL(cfg.buttonImageUrl);
@@ -157,19 +225,18 @@ Ext.ux.Uploader = function(cfg) {
    * SWFUPLOAD HANDLERS *********************
    * ****************************************/
 
+  var swfUploaderDialogOpen = function() {
+    console.log('swfUploaderDialogOpen', this, arguments);
+  };
+
   var swfUploaderLoaded = function() {
-    console.log("swfuploadLoaded", this, arguments);
     this.swfUploader.isLoaded = true;
     onTriggerResize.call(this);
   };
 
   var swfUploaderDialogComplete = function(numFilesSelected, numFilesQueued, numFilesInQueue) {
-    console.log("swfUploaderDialogComplete", this, arguments);
-    //this.fireEvent("dialogComplete", this.uploader, numFilesSelected, numFilesQueued, numFilesInQueue);
     this.uploadingFileCount = 0;
     if (numFilesQueued) {
-      //this.totalFiles = numFilesQueued;
-      //showUploadWindow.call(this, numFilesQueued);
       this.getUploader().getLogPanel().show({
 	fileCount:numFilesQueued
 	,scope:this
@@ -199,38 +266,26 @@ Ext.ux.Uploader = function(cfg) {
 
   var swfUploaderFileUploadComplete = function() {
     console.log("swfUploaderFileUploadComplete", this, arguments);
-//    this.getUploader().getLogPanel().error("file upload error");
   };
 
   var swfUploaderFileQueueComplete = function() {
     console.log("swfUploaderFileQueueComplete", this, arguments);
     this.getUploader().getLogPanel().log("all files uploaded successfully");
-//    this.getUploader().getLogPanel().error("file upload error");
   };
 
-/*
-  var showUploadWindow = function(fileCount) {
-    console.log("showUploadWindow", this, arguments);
-    this.getUploader().getLogPanel().show({
-      fileCount:fileCount
-      ,scope:this.getUploader()
-      ,callback:this.uploadFile
-    });
-  };
-*/
 };
 
-/***************************************************************************************
- ***************************************************************************************
- **** UPLOADER *************************************************************************
- ***************************************************************************************
- ***************************************************************************************/
 
 Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
 
-  getLogPanel:function() {
+  boundEl:null
+
+  ,getLogPanel:function() {
+    console.log('getLogPanel', this, arguments);
     if (!this.logPanel)
-      this.logPanel = new Ext.ux.uploadLogPanel();
+      this.logPanel = new Ext.ux.uploadLogPanel({
+	boundEl:this.boundEl
+      });
     return this.logPanel;
   }
 
@@ -250,42 +305,62 @@ Ext.ns('Ext.ux');
 
 Ext.ux.uploadLogPanel = function(config) {
   Ext.apply(this, config);
-
-  var id = Ext.id();
-  console.log("create status bar", id);
   this.panel = new Ext.Panel({
-    bbar:new Ext.ux.StatusBar({id:id})
+    border:false
+    ,bbar:new Ext.ux.StatusBar()
+    ,autoScroll:true
   });
-
   Ext.ux.file.Uploader.superclass.constructor.apply(this, arguments);
 };
 
 Ext.extend(Ext.ux.uploadLogPanel, Ext.util.Observable, {
 
   boundEl:null
+  ,win:null
   ,progressQueue:[]
 
   ,getWindow:function() {
-    var win = null;
-    if (this.boundEl) {
-      win = new Ext.Panel({
-	height:200
-	,width:200
-	,layout:"fit"
-	,border:false
-	,items:[this.panel]
-      });
-    } else {
-      win = new Ext.Window({
-	height:200
-	,width:200
-	,layout:"fit"
-	,border:false
-	,closeAction:"hide"
-	,items:[this.panel]
-      });
+    console.log('getWindow', this, arguments);
+    if (!this.win) {
+      if (this.boundEl) {
+	this.boundEl.mask();
+	this.win = new Ext.Panel({
+	  height:200
+	  ,width:200
+	  ,frame:true
+	  ,layout:"fit"
+	  ,items:[this.panel]
+	  ,floating:true
+	  ,tools:[{
+	    id:"close"
+	    ,scope:this
+	    ,handler:function(event, el, win){
+	      win.hide();
+	      this.boundEl.unmask();
+	    }
+	  }]
+	  ,bodyStyle:"border:1px solid #99BBE8;"
+	  ,listeners:{
+	    scope:this
+	    ,show:function(panel) {
+	      console.log('show', this, arguments, panel);
+	      panel.el.anchorTo(this.boundEl, "c-c");
+	      panel.doLayout();
+	    }
+	  }
+	}).render(this.boundEl);
+      } else {
+	this.win = new Ext.Window({
+	  height:200
+	  ,width:200
+	  ,layout:"fit"
+	  ,border:true
+	  ,closeAction:"hide"
+	  ,items:[this.panel]
+	});
+      }
     }
-    return win;
+    return this.win;
   }
 
   ,getStatusBar:function() {
@@ -293,13 +368,16 @@ Ext.extend(Ext.ux.uploadLogPanel, Ext.util.Observable, {
   }
 
   ,show:function(config) {
-    console.log("show", this, arguments, this.panel.getBottomToolbar());
-    var toolbar = this.getStatusBar();
+    config.callback = config.callback || Ext.emptyFn;
+    var toolbar = this.getStatusBar(),
+    callback = config.callback.createDelegate(config.scope);
+    if (!this.win || this.win.hidden) {
+      toolbar.on({afterlayout:callback});
+      this.getWindow().show();
+    } else callback();
     toolbar.setStatus({
       text:config.fileCount + " file(s) to upload"
     });
-    this.getStatusBar().on("afterlayout", config.callback.createDelegate(config.scope));
-    this.getWindow().show();
   }
 
   ,add:function(file) {
