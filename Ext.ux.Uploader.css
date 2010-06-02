@@ -1,0 +1,33 @@
+.x-toolbar div.xtb-text {
+  padding:1px 2px 0 19px !important;
+}
+
+.x-status-error {
+  background: url(http://lib.chewam.net/famfamfam/exclamation.png) no-repeat scroll 0 1px transparent;
+}
+
+.x-status-success {
+  background: url(http://lib.chewam.net/famfamfam/tick.png) no-repeat scroll 0 1px transparent;
+}
+
+.x-status-info {
+  background: url(http://lib.chewam.net/famfamfam/information.png) no-repeat scroll 0 1px transparent;
+}
+
+.x-progress-text-error {
+  background: url(http://lib.chewam.net/famfamfam/exclamation.png) no-repeat scroll 0 0 transparent;
+  padding-left:19px;
+  text-align:left;
+}
+
+.x-progress-text-success {
+  background: url(http://lib.chewam.net/famfamfam/tick.png) no-repeat scroll 0 -1px transparent;
+  padding-left:19px;
+  text-align:left;
+}
+
+.x-progress-text-loading {
+  background: url(http://lib.chewam.net/famfamfam/information.png) no-repeat scroll 0 0 transparent;
+  padding-left:19px;
+  text-align:left;
+}
