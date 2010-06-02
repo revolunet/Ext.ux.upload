@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Wed Jun  2 20:38:58 2010 Gary van Woerkens
+** Last update Wed Jun  2 22:26:56 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux');
@@ -118,7 +118,8 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
    * @cfg Object swfParams
    */
   ,swfParams:{
-    buttonImageUrl:"/apps/whiteboard/static/img/button_upload.png" // needed for chrome
+    buttonImageUrl:"http://localhost/dev/upload/examples/img/button.png" // needed for chrome
+    ,itemImageUrl:"/var/www/dev/upload/examples/img/menuitem.png"
   }
   /**
    * @cfg Object swfParams
@@ -170,7 +171,7 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
 
   /**
    * Handles the trigger resize event to place the swfupload mask over it.<br/>
-   * Scope is set to trigger component.
+   * Scope is on trigger component.
    */
   ,resizeTrigger:function() {
     var height = this.el.getHeight(),
@@ -180,8 +181,11 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
     el.setXY(this.el.getXY());
     el.setSize(width, height);
     if (conn.isLoaded)  {
-      if (Ext.isChrome && conn.buttonImageUrl) {
-	conn.setButtonImageURL(conn.buttonImageUrl);
+      if (Ext.isChrome && conn.settings.buttonImageUrl) {
+	var img, xtype = this.getXType();
+	if (xtype === "button") img = conn.settings.buttonImageUrl;
+	else if (xtype === "menuitem") img = conn.settings.itemImageUrl;
+	conn.setButtonImageURL(img);
       }
       conn.setButtonDimensions(width, height);
     }
@@ -192,18 +196,55 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
    * The component has to be in the trigger list (button, menu item).
    * @param {Ext.Component} cmp The component to bind the trigger to.
    */
+   /*
   ,setTrigger:function(cmp) {
     var el = Ext.DomHelper.append(cmp.getEl(), {id:"pofpof", children:[{
       children:[{id:Ext.id()}]
     }]}, true);
     cmp.uploadConfig = {};
     cmp.uploadConfig.el = el.first();
+    console.log("EL", cmp.uploadConfig.el);
     cmp.uploadConfig.body = cmp.uploadConfig.el.first();
+    console.log("BODY", cmp.uploadConfig.body);
     Ext.DomHelper.applyStyles(cmp.uploadConfig.el, {
       position:"absolute"
       ,cursor:"pointer"
     });
     cmp.uploadConfig.conn = this.getSwfConnector(cmp);
+  }
+    */
+  ,setTrigger:function(cmp) {
+
+    var el = cmp.getEl().insertHtml("beforeEnd", '<div><div '
+//      + 'id="pofpof" '
+      + 'style="'
+      + 'position:absolute;'
+      + 'cursor:pointer;'
+      + '">'
+      + '<div '
+//      + 'id="pifpif"'
+      + '></div>'
+      + '</div></div>'
+    , true);
+    cmp.uploadConfig = {};
+    cmp.uploadConfig.el = Ext.isChrome ? el : el.first();
+    cmp.uploadConfig.body = Ext.isChrome ? el.first() : cmp.uploadConfig.el.first();
+    cmp.uploadConfig.conn = this.getSwfConnector(cmp);
+    /*
+    var el = Ext.DomHelper.append(cmp.getEl(), {id:"pofpof", children:[{
+      children:[{id:Ext.id()}]
+    }]}, true);
+    cmp.uploadConfig = {};
+    cmp.uploadConfig.el = el.first();
+    console.log("EL", cmp.uploadConfig.el);
+    cmp.uploadConfig.body = cmp.uploadConfig.el.first();
+    console.log("BODY", cmp.uploadConfig.body);
+    Ext.DomHelper.applyStyles(cmp.uploadConfig.el, {
+      position:"absolute"
+      ,cursor:"pointer"
+    });
+    cmp.uploadConfig.conn = this.getSwfConnector(cmp);
+      */
   }
 
   /**
@@ -213,6 +254,8 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
   ,getSwfConnector:function(cmp) {
     var config = {
       flash_url:this.swfParams.swfUrl
+      ,buttonImageUrl:this.swfParams.buttonImageUrl
+      ,itemImageUrl:this.swfParams.itemImageUrl
       ,movieName:"easy-swf-upload"
       ,upload_url:this.swfParams.url
       ,file_post_name:"Filedata"
