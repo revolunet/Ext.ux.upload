@@ -6,7 +6,6 @@ Ext.onReady(function(){
 */
 
   var uploader = new Ext.ux.Uploader();
-  console.log("UPLOADER", uploader);
 
   new Ext.Button({
     text:"upload to dataview"
@@ -43,8 +42,11 @@ Ext.onReady(function(){
     ];
 
     var store = new Ext.data.JsonStore({
-	data:data,
-        fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+//	data:data,
+      url:"getfiles.php",
+      root:"data",
+      autoLoad:true,
+      fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
     });
 
     var tpl = new Ext.XTemplate(
@@ -60,21 +62,28 @@ Ext.onReady(function(){
         id:'images-view',
         frame:true,
         width:535,
-        autoHeight:true,
+	height:250,
+//        autoHeight:true,
         collapsible:true,
         layout:'fit',
         title:'Simple DataView (0 items selected)',
-
+	uploadLogPanelTarget:true,
+	plugins:[uploader],
+	listeners: {
+	  fileupload:function(uploader, target, file) {
+	    console.log('fileupload event', this, arguments);
+	    this.items.items[0].getStore().reload();
+	  }
+	},
         items: new Ext.DataView({
             store: store,
             tpl: tpl,
-            autoHeight:true,
-            multiSelect: true,
+//            autoHeight:true,
+	    autoScroll:true,
+	    multiSelect: true,
             overClass:'x-view-over',
             itemSelector:'div.thumb-wrap',
             emptyText: 'No images to display',
-	    uploadLogPanelTarget:true,
-	    plugins:[uploader],
 //	    plugins:[browser],
 
             prepareData: function(data){
@@ -85,13 +94,18 @@ Ext.onReady(function(){
             },
 
             listeners: {
-            	selectionchange: {
-            		fn: function(dv,nodes){
-            			var l = nodes.length;
-            			var s = l != 1 ? 's' : '';
-            			panel.setTitle('Simple DataView ('+l+' item'+s+' selected)');
-            		}
+	      /*
+	      fileupload:function(uploader, target, file) {
+		console.log('fileupload event', this, arguments);
+		this.getStore().reload();
+	      }
+              ,*/selectionchange: {
+            	fn: function(dv,nodes){
+            	  var l = nodes.length;
+            	  var s = l != 1 ? 's' : '';
+            	  panel.setTitle('Simple DataView ('+l+' item'+s+' selected)');
             	}
+              }
             }
         })
     });
