@@ -6,6 +6,7 @@ Ext.onReady(function(){
 */
 
   var uploader = new Ext.ux.Uploader();
+  console.log("UPLOADER", uploader);
 
   new Ext.Button({
     text:"upload to dataview"
