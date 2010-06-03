@@ -3,7 +3,8 @@
 }
 
 .x-status-error {
-  background: url(http://lib.chewam.net/famfamfam/exclamation.png) no-repeat scroll 0 1px transparent;
+  background: url(http://lib.chewam.net/famfamfam/exclamation.png) no-repeat scroll 0 -1px transparent;
+  font: 11px tahoma,arial,verdana,sans-serif !important;
 }
 
 .x-status-success {
