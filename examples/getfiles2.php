@@ -1,7 +1,7 @@
 <?php
 $index = 0;
 $files['data'] = array();
-$hd = opendir('uploads');
+$hd = opendir('uploads2');
 while ($file = readdir($hd)) {
   if ($file != '.' and $file != '..') {
     $files['data'][$index]['name'] = $file;

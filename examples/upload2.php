@@ -1,7 +1,7 @@
 <?php
 header('Content-Type:text/html');
 $success = 'false';
-$path = 'uploads';
+$path = 'uploads2';
 
 if (!strlen($_SERVER['HTTP_X_FILE_NAME'])) {
 
