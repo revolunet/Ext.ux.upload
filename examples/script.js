@@ -8,8 +8,8 @@ Ext.onReady(function(){
     url:"upload.php"
     ,id:"uploader1"
     ,swfUrl:"swfupload.swf"
-//    ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.pdf;*.flv;*.mp4;*.swf"
-    ,allowedFileTypes:"*.*"
+    ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.pdf;*.flv;*.mp4;*.swf"
+//    ,allowedFileTypes:"*.*"
     ,maxFileSize:1024
     ,maxFiles:2
   });
@@ -157,13 +157,13 @@ Ext.onReady(function(){
       ,handler:function() {this.reload();}
     }]
     ,tbar:[{
-      text:"upload to dataview"
-      ,plugins:[uploader2]
-    }, {
+      text:"upload to gridpanel"
+//      ,plugins:[uploader2]
+    }, "-", {
       text:"Upload Menu"
       ,menu:[{
-	text:"upload to dataview"
-	,plugins:[uploader2]
+	text:"upload to gridpanel"
+//	,plugins:[uploader2]
       }]
     }]
   });
