@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Thu Jun  3 01:40:49 2010 Gary van Woerkens
+** Last update Thu Jun  3 01:48:59 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux');
@@ -23,7 +23,7 @@ Ext.ns('Ext.ux');
 Ext.ux.Uploader = function(config) {
 
   var triggers = ["button", "menuitem"];
-  var dropZones = ["dataview", "panel", "imagebrowser", "toolbartabpanel"];
+  var dropZones = ["dataview", "panel", "imagebrowser", "toolbartabpanel", "swfscene"];
 
   Ext.applyIf(this.swfParams, Ext.apply({
     url:this.url
