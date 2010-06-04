@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Fri Jun  4 16:48:40 2010 Gary van Woerkens
+** Last update Fri Jun  4 18:48:44 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux');
@@ -52,13 +52,13 @@ Ext.ux.Uploader = function(config) {
       if (!Ext.isGecko) {
 	e.browserEvent.dataTransfer.dropEffect = 'copy';
       }
-      this.fireEvent("windowover");
+      this.fireEvent("dragstart");
       return;
     }
-    ,dragexit:function(e) {
+    ,dragleave:function(e) {
       e.stopPropagation();
       e.preventDefault();
-      this.fireEvent("windowexit");
+      this.fireEvent("dragstop");
       return;
     }
   });
@@ -138,7 +138,7 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
     };
 
     cmp.getUploader = getUploader.createDelegate(this);
-    cmp.relayEvents(this, ["fileupload", "beforeupload", "windowover", "windowexit"]);
+    cmp.relayEvents(this, ["fileupload", "beforeupload", "dragstart", "dragstop"]);
     var xtype = cmp.getXType();
     if (isTrigger(xtype) !== false) {
       cmp.on({
@@ -166,15 +166,18 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
 
     cmp.on({
       scope:cmp
-      ,windowover:function(e) {
-	this.body.addClass("x-uploader-dragover");
+      ,dragstart:function(e) {
+	var el = this.getXType() == "grid" ? this.view.scroller : this.body;
+	el.addClass("x-uploader-dragover");
       }
-      ,windowexit:function(e) {
-	this.body.removeClass("x-uploader-dragover");
+      ,dragstop:function(e) {
+	var el = this.getXType() == "grid" ? this.view.scroller : this.body;
+	el.removeClass("x-uploader-dragover");
       }
     });
 
-    cmp.body.on({
+    var el = cmp.getXType() == "grid" ? cmp.view.scroller : cmp.body;
+    el.on({
       scope:this
       ,dragover:function(e) {
 	e.stopPropagation();
@@ -183,11 +186,13 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
 	if (!Ext.isGecko) {
 	  e.browserEvent.dataTransfer.dropEffect = 'copy';
 	}
+	this.fireEvent("dragstart");
 	return;
       }
-      ,dragexit:function(e) {
+      ,dragleave:function(e) {
 	e.stopPropagation();
 	e.preventDefault();
+	this.fireEvent("dragstop");
 	return;
       }
       ,drop:this.onHtml5FilesDrop.createDelegate(this, [cmp], true)
@@ -388,7 +393,6 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
   }
 
   ,swfUploaderFileQueueError:function(file, errorCode, errorMsg, cmp) {
-    console.log('swfUploaderFileQueueError', this, arguments);
     if (errorCode === -100) errorMsg = "nombre de fichiers maximum atteint (max:"+errorMsg+")";
     else if (errorCode === -110) errorMsg = "taille de fichier maximum atteinte (max:"+this.maxFileSize+" KB)";
     else if (errorCode === -130) errorMsg = "le type de fichier n'est pas valide";
@@ -550,7 +554,6 @@ Ext.extend(Ext.ux.uploadLogPanel, Ext.util.Observable, {
   }
 
   ,log:function(type, msg) {
-    console.log('log', this, arguments);
     this.getStatusBar().setStatus({
       text:msg
       ,iconCls:"x-status-"+type

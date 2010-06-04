@@ -30,12 +30,12 @@ x	background: #dddddd;
 
 #images-view .x-view-over{
     border:1px solid #dddddd;
-    background: #efefef url(../../resources/images/default/grid/row-over.gif) repeat-x left top;
-	padding: 4px;
+    background: #efefef url(http://lib.chewam.net/ext/resources/images/default/grid/row-over.gif) repeat-x left top;
+    padding: 4px;
 }
 
 #images-view .x-view-selected{
-	background: #eff5fb url(images/selected.gif) no-repeat right bottom;
+	background: #eff5fb url(img/selected.gif) no-repeat right bottom;
 	border:1px solid #99bbe8;
 	padding: 4px;
 }
@@ -45,7 +45,7 @@ x	background: #dddddd;
 
 #images-view .loading-indicator {
 	font-size:11px;
-	background-image:url('../../resources/images/default/grid/loading.gif');
+	background-image:url(http://lib.chewam.net/ext/resources/images/default/grid/loading.gif);
 	background-repeat: no-repeat;
 	background-position: left;
 	padding-left:20px;

@@ -1,5 +1,7 @@
 Ext.onReady(function(){
 
+  Ext.QuickTips.init();
+
   /*******************************************************************
    * DATAVIEW ********************************************************
    * *****************************************************************/
@@ -75,15 +77,17 @@ Ext.onReady(function(){
     tools:[{
       id:"gear"
       ,scope:store
+      ,qtip:"remove all files"
       ,handler:function() {this.load({params:{xaction:"removeall"}});}
     }, {
       id:"refresh"
       ,scope:store
+      ,qtip:"refresh"
       ,handler:function() {this.load({params:{xaction:"read"}});}
     }],
     listeners: {
       fileupload:function(uploader, target, file) {
-	this.items.items[0].getStore().reload();
+	this.items.items[0].getStore().load({params:{xaction:"read"}});
       }
     },
     items: new Ext.DataView({
@@ -159,7 +163,7 @@ Ext.onReady(function(){
       ]
       ,listeners: {
 	fileupload:function(uploader, target, file) {
-	  this.getStore().reload();
+	  this.getStore().load({params:{xaction:"read"}});
 	}
       }
     }]
@@ -167,10 +171,12 @@ Ext.onReady(function(){
     ,tools:[{
       id:"gear"
       ,scope:store
+      ,qtip:"remove all files"
       ,handler:function() {this.load({params:{xaction:"removeall"}});}
     } ,{
       id:"refresh"
       ,scope:store2
+      ,qtip:"refresh"
       ,handler:function() {this.load({params:{xaction:"read"}});}
     }]
     ,tbar:[{
@@ -219,7 +225,6 @@ Ext.onReady(function(){
     fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
     ,listeners:{
       load:function(store, records) {
-	console.log(this, records);
 	if (records.length)
 	  photo.update('<img height=71 width=88 src="uploads3/'+records[0].get("name")+'?nocach='+Ext.id()+'" />');
       }
@@ -254,7 +259,7 @@ Ext.onReady(function(){
 	   ,plugins:[uploader3]
 	   ,listeners:{
 	     fileupload:function() {
-	       store3.reload();
+	       store3.load({params:{xaction:"read"}});
 	     }
 	   }
 	 }]
