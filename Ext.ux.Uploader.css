@@ -4,7 +4,7 @@
 }
 
 .x-status-loading {
-  background: url(loading.gif) no-repeat scroll 1px 0 transparent;
+  background: url(img/loading.gif) no-repeat scroll 1px 0 transparent;
   font: 11px tahoma,arial,verdana,sans-serif !important;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .x-status-success {
-  background: url(http://lib.chewam.net/famfamfam/tick.png) no-repeat scroll 1px 0 transparent;
+  background: url(img/tick.png) no-repeat scroll 1px 0 transparent;
 }
 
 .x-status-info {
@@ -28,13 +28,13 @@
 }
 
 .x-progress-text-success {
-  background: url(tick.png) no-repeat scroll 0 -1px transparent;
+  background: url(img/tick.png) no-repeat scroll 0 -1px transparent;
   padding-left:19px;
   text-align:left;
 }
 
 .x-progress-text-loading {
-  background: url(loading.gif) no-repeat scroll 0 0 transparent;
+  background: url(img/loading.gif) no-repeat scroll 0 0 transparent;
   padding-left:19px;
   text-align:left;
 }

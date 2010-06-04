@@ -1,5 +1,4 @@
 <?php
-header('Content-Type:text/html');
 $success = 'false';
 $path = 'uploads3';
 
@@ -32,5 +31,6 @@ if (!strlen($_SERVER['HTTP_X_FILE_NAME'])) {
   $success = 'true';
 }
 
+header('Content-Type:text/plain');
 print '{success:'.$success.'}';
 ?>
