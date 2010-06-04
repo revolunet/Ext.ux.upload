@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Thu Jun  3 19:05:30 2010 Gary van Woerkens
+** Last update Thu Jun  3 20:02:11 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux');
@@ -359,6 +359,7 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
   }
 
   ,swfUploaderFileQueueError:function(file, errorCode, errorMsg, cmp) {
+    console.log('swfUploaderFileQueueError', this, arguments);
     if (errorCode === -100) errorMsg = "nombre de fichiers maximum atteint (max:"+errorMsg+")";
     else if (errorCode === -110) errorMsg = "taille de fichier maximum atteinte (max:"+this.maxFileSize+" KB)";
     else if (errorCode === -130) errorMsg = "le type de fichier n'est pas valide";
@@ -446,8 +447,8 @@ Ext.extend(Ext.ux.uploadLogPanel, Ext.util.Observable, {
     if (!this.win) {
       if (this.boundEl) {
 	this.win = new Ext.Panel({
-	  height:200
-	  ,width:270
+	  height:140
+	  ,width:350
 	  ,frame:true
 	  ,layout:"fit"
 	  ,items:[this.panel]
@@ -515,6 +516,7 @@ Ext.extend(Ext.ux.uploadLogPanel, Ext.util.Observable, {
   }
 
   ,log:function(type, msg) {
+    console.log('log', this, arguments);
     this.getStatusBar().setStatus({
       text:msg
       ,iconCls:"x-status-"+type
