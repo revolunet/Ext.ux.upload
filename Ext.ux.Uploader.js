@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Thu Jun  3 23:08:10 2010 Gary van Woerkens
+** Last update Fri Jun  4 06:11:33 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux');
@@ -90,7 +90,11 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
   /**
    * @cfg Object html5Params
    */
-   ,html5Params:null
+  ,html5Params:null
+  /**
+   * @cfg Boolean disableLogPanel
+   */
+  ,disableLogPanel:false
 
   ,init:function(cmp) {
 
@@ -146,7 +150,6 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
    */
   ,setDropZone:function(cmp) {
 
-    console.log(this.id, "setDropZone", this.html5Params.allowedFileTypes);
     if (cmp.uploadLogPanelTarget === true)
       this.boundEl = cmp.getEl();
 
@@ -159,7 +162,6 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
 	if (!Ext.isGecko) {
 	  e.browserEvent.dataTransfer.dropEffect = 'copy';
 	}
-//	console.log('dragover', this, arguments);
 	Ext.fly(e.target).addClass("x-uploader-dragover");
 	return;
       }
@@ -190,7 +192,7 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
 	  var img, xtype = this.getXType();
 	  if (xtype === "button") img = conn.settings.buttonImageUrl;
 	  else if (xtype === "menuitem") img = conn.settings.itemImageUrl;
-	  conn.setButtonImageURL(img);
+	  //conn.setButtonImageURL(img);
 	}
 	conn.setButtonDimensions(width, height);
       }
@@ -234,7 +236,7 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
       ,file_types:this.swfParams.allowedFileTypes
 //      ,file_upload_limit:this.swfParams.maxFiles
       ,file_queue_limit:this.swfParams.maxFiles
-      ,button_window_mode:Ext.isChrome?'window':'transparent'
+      ,button_window_mode:/*Ext.isChrome?'window':*/'transparent'
       ,debug:false
       ,post_params:{}
 //      ,scope:this
@@ -267,9 +269,9 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
     else {
       Ext.each(files, function(file, index) {
 	var isTooBig = ((file.size / 1000) / this.html5Params.maxFileSize) > 1;
-	console.log(this.id, "startHtml5Upload", this.html5Params.allowedFileTypes);
 	var allowedTypes = this.getAllowedTypesReg(this.html5Params.allowedFileTypes);
 	var isAllowedType = allowedTypes ? allowedTypes.test(file.name) : true;
+	console.log(allowedTypes, isAllowedType);
 	if (!isAllowedType)
 	  this.swfUploaderFileQueueError(file, -130, "", cmp);
 	else if (isTooBig)
@@ -332,6 +334,7 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
     var dt = e.browserEvent.dataTransfer;
     var files = dt.files;
     var target = Ext.get(e.target);
+    Ext.fly(e.target).removeClass("x-uploader-dragover");
     if (files.length && this.fireEvent("beforeupload", this, cmp) !== false) {
       this.getLogPanel().show({
 	fileCount:files.length
@@ -353,6 +356,7 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
   }
 
   ,swfUploaderFileUploadProgress:function(file, uploadedSize, totalSize) {
+    console.log("swfUploaderFileUploadProgress", this, arguments);
     this.getLogPanel().updateProgess(file, uploadedSize/totalSize);
   }
   ,uploadProgress:function(file, event) {
@@ -362,6 +366,8 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
   }
 
   ,swfUploaderFileUploadComplete:function(file, cmp) {
+    console.log("swfUploaderFileUploadComplete", this, arguments);
+    this.getLogPanel().updateProgess(file, 1);
     this.fireEvent("fileupload", this, cmp, file);
   }
   ,uploadLoad:function(file, cmp, event) {
@@ -406,7 +412,9 @@ Ext.extend(Ext.ux.Uploader, Ext.util.Observable, {
       Ext.each(types, function(type) {
 	t.push(type.split(".")[1]);
       });
-      var reg = "\b.("+t.join("|")+")$\b";
+//      var reg = ".("+t.join("|")+")";
+//      var reg = "^(([a-zA-Z]:)|(\\{2}\w+)\$?)(\\(\w[\w].*))("+t.join("|")+")$";
+      var reg = "^.*\.("+t.join("|")+")$";
       this.allowedTypesReg = new RegExp(reg, "g");
     }
     return this.allowedTypesReg;
@@ -444,7 +452,8 @@ Ext.ux.uploadLogPanel = function(config) {
 
   this.panel = new Ext.Panel({
     border:false
-    ,defaults:{style:"margin:0 2 2 2"}
+    ,padding:"2"
+    ,defaults:{style:"margin:0 0 2 0"}
     ,bbar:new Ext.ux.StatusBar({
       height:22
       ,style:"border:1px solid #99BBE8;"
@@ -495,7 +504,7 @@ Ext.extend(Ext.ux.uploadLogPanel, Ext.util.Observable, {
       } else {
 	this.win = new Ext.Window({
 	  height:200
-	  ,width:200
+	  ,width:350
 	  ,layout:"fit"
 	  ,border:true
 	  ,closeAction:"hide"
@@ -556,24 +565,25 @@ Ext.extend(Ext.ux.uploadLogPanel, Ext.util.Observable, {
     console.log('updateProgess', this, arguments);
     var toolbar = this.getStatusBar(),
     p = this.getProgress(file.id);
-    type = type || "loading";
-    if (progress === 1) {
-      type = "success";
+    if (progress === 1 || type == "error") {
+      type = type || "success";
       console.log("before stop progress", p.isUploading);
       p.isUploading = false;
       console.log("stop progress", p.isUploading);
     }
+    type = type || "loading";
     p.updateProgress(progress, this.progressTpl.apply({type:type, text:file.name}));
     var count = this.getUploadingCount();
     console.log("count:"+count);
-    if (count < this.queue.length) {
+    if (count) {
       count = this.queue.length - count;
 //      count += count ? 0 : 1;
       var msg = "envoie " + (this.queue.length > 1 ? "des fichiers" : "du fichier");
       this.log("loading", msg+" ("+ count + "/" + this.queue.length+")");
     } else {
+      count = this.queue.length - count;
       var msg = "envoie terminé ";
-      this.log("info", msg+" ("+this.getUploadingCount() + "/" + this.queue.length+")");
+      this.log("info", msg+" ("+count + "/" + this.queue.length+")");
     }
   }
 
