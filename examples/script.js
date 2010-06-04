@@ -8,10 +8,11 @@ Ext.onReady(function(){
     url:"upload.php"
     ,id:"uploader1"
     ,swfUrl:"swfupload.swf"
-//    ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.pdf;*.flv;*.mp4;*.swf"
+////    Ext.fly(e.target).removeClass("x-uploader-dragover");
+//    ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.mp4"
     ,allowedFileTypes:"*.*"
-    ,maxFileSize:1024
-    ,maxFiles:2
+    ,maxFileSize:0
+    ,maxFiles:0
   });
 
   var container = new Ext.Panel({
@@ -43,6 +44,10 @@ Ext.onReady(function(){
     url:"getfiles.php",
     root:"data",
     autoLoad:true,
+    baseParams:{
+      folder:"uploads"
+      ,xaction:"read"
+    },
     fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
   });
 
@@ -68,9 +73,13 @@ Ext.onReady(function(){
     collapseFirst:false,
     bodyStyle:"border:1px solid #99BBE8;",
     tools:[{
+      id:"gear"
+      ,scope:store
+      ,handler:function() {this.load({params:{xaction:"removeall"}});}
+    }, {
       id:"refresh"
       ,scope:store
-      ,handler:function() {this.reload();}
+      ,handler:function() {this.load({params:{xaction:"read"}});}
     }],
     listeners: {
       fileupload:function(uploader, target, file) {
@@ -119,9 +128,13 @@ Ext.onReady(function(){
   });
 
   var store2 = new Ext.data.JsonStore({
-    url:"getfiles2.php",
+    url:"getfiles.php",
     root:"data",
     autoLoad:true,
+    baseParams:{
+      folder:"uploads2"
+      ,xaction:"read"
+    },
     fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
   });
 
@@ -152,20 +165,120 @@ Ext.onReady(function(){
     }]
     ,collapseFirst:false
     ,tools:[{
+      id:"gear"
+      ,scope:store
+      ,handler:function() {this.load({params:{xaction:"removeall"}});}
+    } ,{
       id:"refresh"
       ,scope:store2
-      ,handler:function() {this.reload();}
+      ,handler:function() {this.load({params:{xaction:"read"}});}
     }]
     ,tbar:[{
-      text:"upload to dataview"
+      text:"upload to gridpanel"
       ,plugins:[uploader2]
-    }, {
+    }, "-", {
       text:"Upload Menu"
       ,menu:[{
-	text:"upload to dataview"
+	text:"upload to gridpanel"
 	,plugins:[uploader2]
       }]
     }]
   });
+
+  /*******************************************************************
+   * FORM ************************************************************
+   * *****************************************************************/
+
+  var uploader3 = new Ext.ux.Uploader({
+    url:"upload3.php"
+    ,id:"uploader3"
+    ,swfUrl:"swfupload.swf"
+    ,disableLogPanel:true
+    ,allowedFileTypes:"*.jpg;*.png;*.gif"
+    ,maxFileSize:1024
+    ,maxFiles:1
+  });
+
+  var photo = new Ext.Panel({
+    region:"west"
+    ,width:100
+    ,padding:"5"
+    ,plugins:[uploader3]
+    ,bodyStyle:"border:1px solid #99BBE8"
+    ,html:'<img height=71 width=88 src="http://cdn.iconfinder.net/data/icons/oxygen/64x64/mimetypes/unknown.png" />'
+  });
+
+  var store3 = new Ext.data.JsonStore({
+    url:"getfiles.php",
+    root:"data",
+    autoLoad:true,
+    baseParams:{
+      folder:"uploads3"
+      ,xaction:"read"
+    },
+    fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    ,listeners:{
+      load:function(store, records) {
+	console.log(this, records);
+	if (records.length)
+	  photo.update('<img height=71 width=88 src="uploads3/'+records[0].get("name")+'?nocach='+Ext.id()+'" />');
+      }
+    }
+  });
+
+   var form = new Ext.form.FormPanel({
+     title:"Simple Form"
+     ,renderTo:"form"
+     ,frame:true
+     ,collapsible:true
+     ,width:535
+     ,height:210
+     ,layout:"border"
+     ,items:[
+       photo
+     , {
+       layout:"form"
+       ,region:"center"
+       ,padding:"5"
+       ,labelWidth:60
+       ,items:[{
+	 xtype:"compositefield"
+	 ,anchor:"0"
+	 ,fieldLabel:"Name"
+	 ,items:[{
+	   xtype:"textfield"
+	   ,flex:1
+	 }, {
+	   xtype:"button"
+	   ,text:"image"
+	   ,plugins:[uploader3]
+	   ,listeners:{
+	     fileupload:function() {
+	       store3.reload();
+	     }
+	   }
+	 }]
+       }, {
+	 fieldLabel:"Email"
+	 ,xtype:"textfield"
+	 ,anchor:"0"
+       }, {
+	 fieldLabel:"Birth date"
+	 ,xtype:"datefield"
+	 ,anchor:"0"
+       }]
+     }, {
+       region:"south"
+       ,height:90
+       ,layout:"form"
+       ,labelAlign:"top"
+       ,padding:"5"
+       ,items:[{
+	 xtype:"textarea"
+	 ,fieldLabel:"Comments"
+	 ,anchor:"0"
+       }]
+     }]
+   });
 
 });
