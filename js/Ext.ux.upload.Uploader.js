@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Mon Jun  7 05:26:46 2010 Gary van Woerkens
+** Last update Mon Jun  7 13:34:26 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -199,14 +199,16 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     var config, body,
     btn = cmp.getEl().child("td.x-btn-mc") || cmp.getEl(),
     el = btn.insertHtml("beforeEnd",
-      '<div>'
-      + '<div style="position:absolute;cursor:pointer;">'
-      + '<div></div>'
+      '<div id="'+Ext.id()+'">'
+      + '<div id="'+Ext.id()+'" style="position:absolute;cursor:pointer;">'
+      + '<div id="'+Ext.id()+'"></div>'
       + '</div>'
       + '</div>'
     , true);
-    el = Ext.isChrome ? el : el.first();
+    //el = Ext.isChrome ? el : el.first();
+    el = el.first();
     body = el.first();
+    console.log(el, body, el.id, body.id);
     config = {
       el:el
       ,body:body
