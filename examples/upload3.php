@@ -4,7 +4,6 @@ $path = 'uploads3';
 
 $d = dir($path); 
 while($entry = $d->read()) { 
-  print var_dump($entry);
   if ($entry!= "." && $entry!= "..") { 
     unlink($path."/".$entry); 
   } 

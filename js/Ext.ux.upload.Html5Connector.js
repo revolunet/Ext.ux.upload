@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:02:46 2010 Gary van Woerkens
-** Last update Mon Jun  7 05:49:29 2010 Gary van Woerkens
+** Last update Mon Jun  7 15:21:26 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -48,16 +48,33 @@ Ext.ux.upload.Html5Connector = function(config) {
     ,"beforeupload"
     /**
      * @event init Fires on files drop.
+     * TO DELETE ?
      * @param {Ext.ux.upload.Html5Connector} this
      */
     ,"init"
     /**
+     * @event progress Fires when file upload progress
+     * @param {Ext.ux.upload.Html5Connector} this
+     * @param {Object} file
+     * @param {Number} loaded The file loading percentage<br/>
+     * It must a decimal value greater than 0 and less than 1
+     */
+    ,"progress"
+        /**
      * @event error Fires on upload error.
      * @param {Ext.ux.upload.Html5Connector} this
      * @param {Object} file
      * @param {String} msg The error message
      */
     ,"error"
+    /**
+     * @event complete Fires when file upload is over
+     * @param {Ext.ux.upload.Html5Connector} this
+     * @param {Object} file
+     */
+    ,"complete"
+
+
   );
 
   Ext.ux.upload.Html5Connector.superclass.constructor.call(this);
@@ -196,7 +213,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
     else {
       var xhr = new XMLHttpRequest();
       xhr.upload.addEventListener("loadstart", this.onUploadStart.createDelegate(this, [file], 0), false);
-      xhr.upload.addEventListener("load", this.onUploadLoad.createDelegate(this, [file], 0), false);
+      xhr.upload.addEventListener("load", this.onUploadLoad.createDelegate(this, [file, xhr], 0), false);
       xhr.upload.addEventListener("error", this.onUploadError.createDelegate(this, [file], 0), false);
       xhr.upload.addEventListener("progress", this.onUploadProgress.createDelegate(this, [file], 0), false);
       xhr.open("POST", this.url , true);
@@ -250,14 +267,19 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
     this.fireEvent("start", this, file);
   }
 
-  ,onUploadLoad:function(file, e) {
-    console.log('html5 onUploadLoad', this, arguments);
-    this.fireEvent("progress", this, file, e.loaded/e.total);
-  }
-
   ,onUploadProgress:function(file, e) {
     console.log('html5 onUploadProgress', this, arguments);
     this.fireEvent("progress", this, file, e.loaded/e.total);
+  }
+
+  ,onUploadLoad:function(file, request, e) {
+    console.log('html5 onUploadLoad', this, arguments);
+    if (request.status === 500)
+      this.fireEvent("error", this, file, "erreur serveur");
+    else if (request.status === 404)
+      this.fireEvent("error", this, file, "serveur injoignable");
+    else if (request.status === 200)
+      this.fireEvent("complete", this, file, e.loaded/e.total);
   }
 
   ,onUploadError:function(file, msg) {

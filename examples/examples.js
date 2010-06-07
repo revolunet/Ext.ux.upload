@@ -10,11 +10,15 @@ Ext.onReady(function(){
     url:"upload.php"
     ,id:"uploader1"
     ,swfUrl:"swfupload.swf"
-////    Ext.fly(e.target).removeClass("x-uploader-dragover");
 //    ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.mp4"
     ,allowedFileTypes:"*.*"
     ,maxFileSize:0
     ,maxFiles:0
+    ,listeners:{
+      beforeupload:function() {
+	// Return false to cancel upload.
+      }
+    }
   });
 
   var container = new Ext.Panel({
@@ -203,6 +207,7 @@ Ext.onReady(function(){
     ,allowedFileTypes:"*.jpg;*.png;*.gif"
     ,maxFileSize:1024
     ,maxFiles:1
+    ,enableLogPanel:false
   });
 
   var photo = new Ext.Panel({

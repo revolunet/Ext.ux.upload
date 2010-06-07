@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:03:44 2010 Gary van Woerkens
-** Last update Mon Jun  7 05:46:20 2010 Gary van Woerkens
+** Last update Mon Jun  7 17:40:15 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -109,16 +109,6 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
    * To allow all types of file to be uploaded use "*.*".
    */
   ,allowedFileTypes:"*.*"
-  /**
-   * @cfg String swfButtonImageUrl
-   * TO DELETE
-   */
-  ,swfButtonImageUrl:""
-  /**
-   * @cfg String swfItemImageUrl
-   * TO DELETE
-   */
-  ,swfItemImageUrl:""
 
   /**
    * True if SWFUpload has been loaded.
@@ -162,9 +152,7 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
       ,button_window_mode:"transparent"
       ,file_size_limit:this.maxFileSize
       ,file_types:this.allowedFileTypes
-      ,itemImageUrl:this.swfItemImageUrl
       ,button_placeholder_id:this.body.id
-      ,buttonImageUrl:this.swfButtonImageUrl
       // handlers
       ,upload_start_handler:this.onUploadStart.createDelegate(this)
       ,upload_error_handler:this.onUploadError.createDelegate(this)
