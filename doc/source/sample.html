@@ -1,0 +1,110 @@
+<html>
+<head>
+  <title>The source code</title>
+    <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+</head>
+<body  onload="prettyPrint();">
+    <pre class="prettyprint lang-js">/*
+ * This is ext-doc sample javascript file
+ */
+
+Ext.namespace("SamplePackage");
+
+<div id="cls-SamplePackage.SampleClass"></div>/**
+ * @class SamplePackage.SampleClass
+ * @extends Ext.Panel
+ * This is a sample class <br/>
+ * {@link SamplePackage.SampleClass#methodOne this is method one} <br/>
+ * {@link SamplePackage.SampleClass#methodOne} <br/>
+ * {@link #methodOne another link} <br/>
+ * {@link #methodOne} <br/>
+ * {@link SamplePackage.SampleClass} <br/>
+ * {@link SamplePackage.SampleClass sample class} <br/>
+ * @author oxymoron
+ * @version 1.0.101
+ * @demo test 
+ */
+SamplePackage.SampleClass = Ext.extend(Ext.Panel, {
+
+    <div id="cfg-SamplePackage.SampleClass-configOne"></div>/**
+     * @cfg {String} configOne This is the config option
+     */
+
+    <div id="cfg-SamplePackage.SampleClass-configTwo"></div>/**
+     * @cfg Number configTwo     
+     * Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce fringilla
+     * varius erat. Mauris bibendum. Sed pellentesque libero id mi.
+     * Cras in lacus vel ipsum ultrices dapibus. Nulla ac odio.
+     * Phasellus vel augue vitae ligula suscipit tincidunt.
+     * Pellentesque dictum sodales magna. Sed accumsan.
+     * Morbi congue sapien dapibus lectus.
+     * Etiam feugiat tellus vulputate magna.
+     */
+    configTwo : 10,
+
+    <div id="prop-SamplePackage.SampleClass-propertyOne"></div>/**
+     * This is a property
+     */
+    propertyOne: "PropertyOne",
+
+    <div id="prop-SamplePackage.SampleClass-propertyTwo"></div>/**
+     * This is a property with type
+     * @type {Number}
+     */
+    propertyTwo: "PropertyTwo",
+
+    <div id="method-SamplePackage.SampleClass-methodOne"></div>/**
+     * This is a method declaration
+     * @author oxymoron
+     */
+    methodOne : function(){},
+
+    // private
+    privateFunction: function(){
+
+        <div id="method-SamplePackage.SampleClass-methodTwo"></div>/**
+         * This is a method declaration
+         * @param {String} param1 Parameter name
+         * @param {String} param2 (Optional) Optional parameter
+         * @return {Number} Return value
+         * @author oxymoron
+         * @version 1.0
+         */
+        this.methodTwo = function(){};
+
+        <div id="method-SamplePackage.SampleClass-methodThree"></div>/**
+         * This is a method declaration with specified method name
+         * @method methodThree
+         * @author user
+         * @version 1.1
+         */
+        var mThree = function(){};
+        this.methodThree = mThree;
+
+        this.addEvents(
+            <div id="event-SamplePackage.SampleClass-eventOne"></div>/**
+             * @event eventOne Event declaration
+             */
+            'eventOne',
+            <div id="event-SamplePackage.SampleClass-eventTwo"></div>/**
+             * @event eventTwo Event with parameters
+             * @param {String} param1 Parameter name
+             * @param {String} param2 Parameter name
+             */
+            'eventTwo'
+        );
+
+    }
+
+
+
+});
+
+<div id="cls-SamplePackage.Singleton"></div>/**
+ * @class SamplePackage.Singleton
+ * @singleton
+ */
+SamplePackage.Singleton = function(){};</pre>    
+</body>
+</html>

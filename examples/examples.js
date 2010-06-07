@@ -6,7 +6,7 @@ Ext.onReady(function(){
    * DATAVIEW ********************************************************
    * *****************************************************************/
 
-  var uploader = new Ext.ux.Uploader({
+  var uploader = new Ext.ux.upload.Uploader({
     url:"upload.php"
     ,id:"uploader1"
     ,swfUrl:"swfupload.swf"
@@ -122,7 +122,7 @@ Ext.onReady(function(){
    * GRIDPANEL *******************************************************
    * *****************************************************************/
 
-  var uploader2 = new Ext.ux.Uploader({
+  var uploader2 = new Ext.ux.upload.Uploader({
     url:"upload2.php"
     ,id:"uploader2"
     ,swfUrl:"swfupload.swf"
@@ -195,7 +195,7 @@ Ext.onReady(function(){
    * FORM ************************************************************
    * *****************************************************************/
 
-  var uploader3 = new Ext.ux.Uploader({
+  var uploader3 = new Ext.ux.upload.Uploader({
     url:"upload3.php"
     ,id:"uploader3"
     ,swfUrl:"swfupload.swf"
