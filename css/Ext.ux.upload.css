@@ -1,0 +1,48 @@
+.x-toolbar div.xtb-text {
+  padding:2px 2px 0 21px !important;
+  height:18px;
+}
+
+.x-status-loading {
+  background: url(../img/loading.gif) no-repeat scroll 1px 0 transparent;
+  font: 11px tahoma,arial,verdana,sans-serif !important;
+}
+
+.x-status-error {
+  background: url(http://lib.chewam.net/famfamfam/exclamation.png) no-repeat scroll 1px 0 transparent;
+  font: 11px tahoma,arial,verdana,sans-serif !important;
+}
+
+.x-status-success {
+  background: url(../img/tick.png) no-repeat scroll 1px 0 transparent;
+}
+
+.x-status-info {
+  background: url(../img/info.png) no-repeat scroll 1px 2px transparent;
+}
+
+.x-progress-text-error {
+  background: url(http://lib.chewam.net/famfamfam/exclamation.png) no-repeat scroll 0 0 transparent;
+  padding-left:19px;
+  text-align:left;
+}
+
+.x-progress-text-success {
+  background: url(../img/tick.png) no-repeat scroll 0 -1px transparent;
+  padding-left:19px;
+  text-align:left;
+}
+
+.x-progress-text-loading {
+  background: url(../img/loading.gif) no-repeat scroll 0 0 transparent;
+  padding-left:19px;
+  text-align:left;
+}
+
+.x-uploader-dragover {
+  background-color:#FFFCD9 !important;
+}
+
+.icon-eraser {
+  background: url(../img/eraser.png) no-repeat scroll 0 0 transparent !important;
+}
