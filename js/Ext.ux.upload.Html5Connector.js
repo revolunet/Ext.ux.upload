@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:02:46 2010 Gary van Woerkens
-** Last update Mon Jun  7 15:21:26 2010 Gary van Woerkens
+** Last update Tue Jun  8 20:31:25 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -195,7 +195,8 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
   ,uploadFiles:function(files) {
     var tooManyFiles = files.length > this.maxFiles;
     if (tooManyFiles && this.maxFiles)
-      this.fireEvent("error", -100, this.maxFiles);
+      this.onUploadError(null, "trop de fichiers envoyés simultanément (max:"+this.maxFiles+")");
+//      this.fireEvent("error", -100, this.maxFiles);
     else Ext.each(files, this.uploadFile, this);
   }
 
@@ -207,13 +208,13 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
   ,uploadFile:function(file) {
     file.id = Ext.id();
     if (!this.isAllowedFileType(file.name))
-      this.onUploadError(file, "type de fichier");
+      this.onUploadError(file, "type de fichier incorrect");
     else if (!this.isAllowedFileSize(file.size))
-      this.onUploadError(file, "taille limite");
+      this.onUploadError(file, "taille limite atteinte (max:"+this.maxFileSize+" KB)");
     else {
       var xhr = new XMLHttpRequest();
       xhr.upload.addEventListener("loadstart", this.onUploadStart.createDelegate(this, [file], 0), false);
-      xhr.upload.addEventListener("load", this.onUploadLoad.createDelegate(this, [file, xhr], 0), false);
+      xhr.onreadystatechange = this.onUploadLoad.createDelegate(this, [file, xhr], 0);
       xhr.upload.addEventListener("error", this.onUploadError.createDelegate(this, [file], 0), false);
       xhr.upload.addEventListener("progress", this.onUploadProgress.createDelegate(this, [file], 0), false);
       xhr.open("POST", this.url , true);
@@ -263,27 +264,25 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
   }
 
   ,onUploadStart:function(file, e) {
-    console.log('html5 onUploadStart', this, arguments);
     this.fireEvent("start", this, file);
   }
 
   ,onUploadProgress:function(file, e) {
-    console.log('html5 onUploadProgress', this, arguments);
     this.fireEvent("progress", this, file, e.loaded/e.total);
   }
 
   ,onUploadLoad:function(file, request, e) {
-    console.log('html5 onUploadLoad', this, arguments);
-    if (request.status === 500)
-      this.fireEvent("error", this, file, "erreur serveur");
-    else if (request.status === 404)
-      this.fireEvent("error", this, file, "serveur injoignable");
-    else if (request.status === 200)
-      this.fireEvent("complete", this, file, e.loaded/e.total);
+    if (request.readyState === 4) {
+      if (request.status === 500)
+	this.fireEvent("error", this, file, "erreur serveur");
+      else if (request.status === 404)
+	this.fireEvent("error", this, file, "serveur injoignable");
+      else if (request.status === 200)
+	this.fireEvent("complete", this, file, e.loaded/e.total);
+    }
   }
 
   ,onUploadError:function(file, msg) {
-    console.log('html5 onUploadError', this, arguments);
     this.fireEvent("error", this, file, msg);
   }
 

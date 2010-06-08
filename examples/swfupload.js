@@ -749,7 +749,6 @@ SWFUpload.prototype.testExternalInterface = function () {
 SWFUpload.prototype.flashReady = function () {
 	// Check that the movie element is loaded correctly with its ExternalInterface methods defined
 	var movieElement = this.getMovieElement();
-
 	if (!movieElement) {
 		this.debug("Flash called back ready but the flash movie can't be found.");
 		return;

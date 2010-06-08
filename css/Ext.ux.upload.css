@@ -1,20 +1,20 @@
 .x-toolbar div.xtb-text {
-  padding:2px 2px 0 21px !important;
+  padding:3px 2px 0 21px !important;
   height:18px;
 }
 
 .x-status-loading {
-  background: url(../img/loading.gif) no-repeat scroll 1px 0 transparent;
+  background: url(../img/loading.gif) no-repeat scroll 1px 2px transparent;
   font: 11px tahoma,arial,verdana,sans-serif !important;
 }
 
 .x-status-error {
-  background: url(http://lib.chewam.net/famfamfam/exclamation.png) no-repeat scroll 1px 0 transparent;
+  background: url(http://lib.chewam.net/famfamfam/exclamation.png) no-repeat scroll 1px 2px transparent;
   font: 11px tahoma,arial,verdana,sans-serif !important;
 }
 
 .x-status-success {
-  background: url(../img/tick.png) no-repeat scroll 1px 0 transparent;
+  background: url(../img/tick.png) no-repeat scroll 1px 2px transparent;
 }
 
 .x-status-info {

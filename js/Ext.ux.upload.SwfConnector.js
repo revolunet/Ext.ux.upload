@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:03:44 2010 Gary van Woerkens
-** Last update Mon Jun  7 17:40:15 2010 Gary van Woerkens
+** Last update Tue Jun  8 22:46:01 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -166,18 +166,15 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
   }
 
   ,onSwfuploadLoaded:function() {
-    console.log("swf swfloaded", this, arguments);
     this.loaded = true;
     this.fireEvent("load", this);
   }
 
   ,onFileDialogStart:function() {
-    console.log('swf onFileDialogStart', this, arguments);
     this.fireEvent("dialogstart", this);
   }
 
   ,onFileDialogComplete:function(selectedFilesCount, queueFilesCount) {
-    console.log('swf onFileDialogComplete', this, arguments);
     if (
       queueFilesCount &&
       this.fireEvent("beforeupload", this, selectedFilesCount) !== false
@@ -188,29 +185,29 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
   }
 
   ,onFileQueueError:function(file, errorCode, errorMsg) {
-    console.log('swf onFileQueueError', this, arguments);
     var msg = "";
-    if (errorCode == -110) msg = "taille limite";
+    if (errorCode == -100)
+      msg = "trop de fichiers envoyés simultanément (max:"+this.maxFiles+")";
+    else if (errorCode == -110)
+      msg = "taille limite atteinte (max:"+this.maxFileSize+" KB)";
+    else if (errorCode == -130)
+      msg = "type de fichier incorrect";
     this.fireEvent("error", this, file, msg);
   }
 
   ,onUploadStart:function(file) {
-    console.log("swf onUploadStart", this, arguments);
     this.fireEvent("start", this, file);
   }
 
   ,onUploadProgress:function(file, uploadedSize, totalSize) {
-    console.log('swf onUploadProgress', this, arguments);
     this.fireEvent("progress", this, file, uploadedSize/totalSize);
   }
 
   ,onUploadError:function() {
-    console.log('swf onUploadError', this, arguments);
     this.fireEvent("error", this, arguments);
   }
 
   ,onUploadComplete:function(file) {
-    console.log('swf onUploadComplete', this, arguments);
     this.fireEvent("complete", this, file);
   }
 

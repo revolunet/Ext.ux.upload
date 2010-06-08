@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Mon Jun  7 21:45:29 2010 Gary van Woerkens
+** Last update Tue Jun  8 23:39:31 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -49,6 +49,8 @@ panel.render(Ext.getBody());
 Ext.ux.upload.Uploader = function(config) {
 
   Ext.apply(this, config);
+
+  this.connections = [];
 
   this.swfParams = config.swfParams || {};
   Ext.apply(this.swfParams, {
@@ -188,7 +190,8 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     };
     Ext.apply(config, this.html5Params);
     cmp.conn = new Ext.ux.upload.Html5Connector(config);
-    this.relayEvents(cmp.conn, ["beforeupload"]);
+    this.connections.push(cmp.conn);
+//    this.relayEvents(cmp.conn, ["beforeupload"]);
   }
 
   /**
@@ -197,11 +200,12 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    * @param {Ext.Component} cmp The component to bind the trigger to.
    */
   ,setTrigger:function(cmp) {
+    var pos = cmp.getEl().getXY();
     var config, body,
     btn = cmp.getEl().child("td.x-btn-mc") || cmp.getEl(),
     el = btn.insertHtml("beforeEnd",
       '<div id="'+Ext.id()+'">'
-      + '<div id="'+Ext.id()+'" style="position:absolute;cursor:pointer;">'
+      + '<div id="'+Ext.id()+'" style="position:absolute;cursor:pointer;top:'+pos[1]+';left:'+pos[0]+'">'
       + '<div id="'+Ext.id()+'"></div>'
       + '</div>'
       + '</div>'
@@ -224,7 +228,8 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     };
     Ext.apply(config, this.swfParams);
     cmp.conn = new Ext.ux.upload.SwfConnector(config);
-    this.relayEvents(cmp.conn, ["beforeupload"]);
+    this.connections.push(cmp.conn);
+    //this.relayEvents(cmp.conn, ["beforeupload"]);
     cmp.on("resize", this.resizeTrigger);
   }
 
@@ -257,8 +262,8 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 
   ,getLogPanelFrame:function(panel) {
     if (this.dialogEl) {
-      return new Ext.ux.Dialog({
-	height:200
+      return new Ext.ux.DialogX({
+	height:140
 	,width:350
 	,layout:"fit"
 	,border:false
@@ -286,48 +291,61 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     this.url = url;
     this.swfParams.url = url;
     this.html5Params.url = url;
+    Ext.each(this.connections, function(conn) {
+      conn.url = url;
+      if (conn.swf) conn.swf.setUploadURL(url);
+    });
   }
 
   // HANDLERS
   ,onBeforeUpload:function(conn, fileCount) {
-    console.log('onBeforeUpload', this, arguments);
+    this.fireEvent("beforeupload", this, conn, fileCount);
   }
 
   ,onUploadStart:function(conn, file) {
-    console.log('onUploadStart', this, arguments);
     if (this.enableLogPanel) {
       var panel = this.getLogPanel();
       this.getLogPanel().show();
       this.getLogPanel().addProgress(file);
+      this.getLogPanel().setStatus("loading", "en attente...");
     }
   }
 
   ,onUploadProgress:function(conn, file, uploaded) {
-    console.log('onUploadProgress', this, arguments);
+//    console.log('onUploadProgress', this, arguments);
     if (this.enableLogPanel) {
-      this.getLogPanel().updateProgress({file:file, progress:uploaded});
+      this.getLogPanel().updateProgress({
+	file:file
+	,type:"loading"
+	,progress:uploaded
+      });
     }
   }
 
   ,onUploadComplete:function(conn, file) {
-    console.log('onUploadComplete', this, arguments);
+//    console.log('onUploadComplete', this, arguments);
     if (this.enableLogPanel) {
-      this.getLogPanel().updateProgress({file:file, progress:1});
+      this.getLogPanel().updateProgress({
+	file:file
+	,progress:1
+	,type:"success"
+      });
       this.fireEvent("fileupload", this, conn, file);
     }
   }
 
   ,onUploadError:function(conn, file, msg) {
-    console.log('onUploadError', this, arguments);
     if (this.enableLogPanel) {
       this.getLogPanel().show();
-      this.getLogPanel().addProgress(file);
-      this.getLogPanel().updateProgress({
-	file:file
-	,progress:0
-	,type:"error"
-	,msg:msg
-      });
+      if (file) {
+	this.getLogPanel().addProgress(file);
+	this.getLogPanel().updateProgress({
+	  file:file
+	  ,progress:0
+	  ,type:"error"
+	  ,msg:msg
+	});
+      } else this.getLogPanel().setStatus("error", msg);
     }
   }
 

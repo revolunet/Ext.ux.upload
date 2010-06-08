@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Mon Jun  7 21:49:24 2010 Gary van Woerkens
+** Last update Tue Jun  8 23:33:27 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -121,6 +121,23 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
   ,updateProgress:function(config) {
     var toolbar = this.getStatusBar(),
     p = this.getProgress(config.file.id);
+    p.updateProgress(config.progress, this.progressTpl.apply({
+      type:config.type
+      ,text:config.file.name
+      ,msg:config.msg
+    }));
+    // // //
+    if (config.type === "loading") {
+      count = this.queue.length - this.getUploadingCount() + 1,
+      msg = "envoi " + (this.queue.length > 1 ? "des fichiers" : "du fichier");
+    } else if (config.type === "success" || config.type === "error") {
+      config.type = "info";
+      p.isUploading = false;
+      var count = this.queue.length - this.getUploadingCount(),
+      msg = "envoi terminé ";
+    }
+    this.setStatus(config.type, msg+" ("+count + "/" + this.queue.length+")");
+    /*
     config.msg = config.msg || "";
     if (config.progress === 1 || config.type == "error") {
       config.type = config.type || "success";
@@ -142,6 +159,8 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
       var msg = "envoie terminé ";
       this.setStatus("info", msg+" ("+count + "/" + this.queue.length+")");
     }
+     */
+
   }
 
   ,setStatus:function(type, msg) {
@@ -184,7 +203,7 @@ Ext.reg('uploadlogspanel', Ext.ux.upload.LogPanel);
 
 Ext.ns('Ext.ux');
 
-Ext.ux.Dialog = Ext.extend(Ext.Panel, {
+Ext.ux.DialogX = Ext.extend(Ext.Panel, {
 
   height:140
   ,width:350
@@ -200,16 +219,15 @@ Ext.ux.Dialog = Ext.extend(Ext.Panel, {
       id:"close"
       ,scope:this
       ,handler:function(event, el, win){
-	this.hide();
-	this.dialogEl.unmask();
+	this.close();
       }
     }];
 
-    Ext.ux.Dialog.superclass.initComponent.call(this);
+    Ext.ux.DialogX.superclass.initComponent.call(this);
 
     this.on({
       scope:this
-      ,show:function(/*panel*/) {
+      ,show:function() {
 	this.dialogEl.mask();
 	this.getEl().anchorTo(this.dialogEl, "c-c");
 	this.doLayout();
@@ -218,6 +236,11 @@ Ext.ux.Dialog = Ext.extend(Ext.Panel, {
 
   }
 
+  ,close:function() {
+    this.hide();
+    this.dialogEl.unmask();
+  }
+
 });
 
-Ext.reg('dialogpanel', Ext.ux.Dialog);
+Ext.reg('dialogpanel', Ext.ux.DialogX);
