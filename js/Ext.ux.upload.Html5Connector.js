@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:02:46 2010 Gary van Woerkens
-** Last update Tue Jun  8 20:31:25 2010 Gary van Woerkens
+** Last update Tue Jun  8 23:51:10 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -180,7 +180,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
     e.preventDefault();
     var files = e.browserEvent.dataTransfer.files;
     if (
-      files.length &&
+      files && files.length &&
       this.fireEvent("beforeupload", this, files.length) !== false
     ) {
       this.uploadFiles(files);

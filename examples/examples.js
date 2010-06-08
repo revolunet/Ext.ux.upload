@@ -10,8 +10,7 @@ Ext.onReady(function(){
     url:"upload.php"
     ,id:"uploader1"
     ,swfUrl:"swfupload.swf"
-//    ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.mp4"
-    ,allowedFileTypes:"*.*"
+    ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.mp4"
     ,maxFileSize:0
     ,maxFiles:0
     ,listeners:{
