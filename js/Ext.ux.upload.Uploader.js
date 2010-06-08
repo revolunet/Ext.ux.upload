@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Tue Jun  8 23:39:31 2010 Gary van Woerkens
+** Last update Wed Jun  9 00:46:59 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -191,7 +191,6 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     Ext.apply(config, this.html5Params);
     cmp.conn = new Ext.ux.upload.Html5Connector(config);
     this.connections.push(cmp.conn);
-//    this.relayEvents(cmp.conn, ["beforeupload"]);
   }
 
   /**
@@ -210,7 +209,6 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       + '</div>'
       + '</div>'
     , true);
-    //el = Ext.isChrome ? el : el.first();
     el = el.first();
     body = el.first();
     config = {
@@ -229,7 +227,6 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     Ext.apply(config, this.swfParams);
     cmp.conn = new Ext.ux.upload.SwfConnector(config);
     this.connections.push(cmp.conn);
-    //this.relayEvents(cmp.conn, ["beforeupload"]);
     cmp.on("resize", this.resizeTrigger);
   }
 
@@ -312,7 +309,6 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
   }
 
   ,onUploadProgress:function(conn, file, uploaded) {
-//    console.log('onUploadProgress', this, arguments);
     if (this.enableLogPanel) {
       this.getLogPanel().updateProgress({
 	file:file
@@ -323,15 +319,14 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
   }
 
   ,onUploadComplete:function(conn, file) {
-//    console.log('onUploadComplete', this, arguments);
     if (this.enableLogPanel) {
       this.getLogPanel().updateProgress({
 	file:file
 	,progress:1
 	,type:"success"
       });
-      this.fireEvent("fileupload", this, conn, file);
     }
+    this.fireEvent("fileupload", this, conn, file);
   }
 
   ,onUploadError:function(conn, file, msg) {

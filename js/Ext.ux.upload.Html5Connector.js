@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:02:46 2010 Gary van Woerkens
-** Last update Tue Jun  8 23:51:10 2010 Gary van Woerkens
+** Last update Wed Jun  9 00:47:18 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -196,7 +196,6 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
     var tooManyFiles = files.length > this.maxFiles;
     if (tooManyFiles && this.maxFiles)
       this.onUploadError(null, "trop de fichiers envoyés simultanément (max:"+this.maxFiles+")");
-//      this.fireEvent("error", -100, this.maxFiles);
     else Ext.each(files, this.uploadFile, this);
   }
 
@@ -277,8 +276,9 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
 	this.fireEvent("error", this, file, "erreur serveur");
       else if (request.status === 404)
 	this.fireEvent("error", this, file, "serveur injoignable");
-      else if (request.status === 200)
+      else if (request.status === 200) {
 	this.fireEvent("complete", this, file, e.loaded/e.total);
+      }
     }
   }
 

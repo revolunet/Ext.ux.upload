@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Tue Jun  8 23:33:27 2010 Gary van Woerkens
+** Last update Wed Jun  9 00:48:25 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -19,34 +19,6 @@ Ext.ns('Ext.ux.upload');
  * @author Gary van Woerkens
  * @version 1.0
  */
-/*
-Ext.ux.upload.LogPanel = function(config) {
-
-  Ext.apply(this, config);
-
-  this.panel = new Ext.Panel({
-    border:false
-    ,padding:"2"
-    ,defaults:{style:"margin:0 0 2 0"}
-    ,bodyStyle:"background-color:#DFE8F6"
-    ,bbar:new Ext.ux.StatusBar({
-      height:27
-      ,style:"border:1px solid #99BBE8;"
-      ,items:[{
-	iconCls:"icon-eraser"
-	,tooltip:"vider la liste des téléchargements"
-	,scope:this
-	,handler:this.cleanLogPanel
-      }]
-    })
-    ,autoScroll:true
-  });
-
-  Ext.ux.upload.LogPanel.superclass.constructor.apply(this, arguments);
-
-};
-*/
-
 Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
   boundEl:null
@@ -109,7 +81,7 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 	text:this.progressTpl.apply({type:"loading", text:file.name})
 	,isUploading:true
       });
-      this.add(p);
+      this.insert(0, p);
       this.doLayout();
       this.queue.push({
 	id:file.id
@@ -126,7 +98,6 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
       ,text:config.file.name
       ,msg:config.msg
     }));
-    // // //
     if (config.type === "loading") {
       count = this.queue.length - this.getUploadingCount() + 1,
       msg = "envoi " + (this.queue.length > 1 ? "des fichiers" : "du fichier");
@@ -137,30 +108,6 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
       msg = "envoi terminé ";
     }
     this.setStatus(config.type, msg+" ("+count + "/" + this.queue.length+")");
-    /*
-    config.msg = config.msg || "";
-    if (config.progress === 1 || config.type == "error") {
-      config.type = config.type || "success";
-      p.isUploading = false;
-    }
-    config.type = config.type || "loading";
-    p.updateProgress(config.progress, this.progressTpl.apply({
-      type:config.type
-      ,text:config.file.name
-      ,msg:config.msg
-    }));
-    var count = this.getUploadingCount();
-    if (count) {
-      count = this.queue.length - count + 1;
-      var msg = "envoie " + (this.queue.length > 1 ? "des fichiers" : "du fichier");
-      this.setStatus("loading", msg+" ("+ count + "/" + this.queue.length+")");
-    } else {
-      count = this.queue.length - count;
-      var msg = "envoie terminé ";
-      this.setStatus("info", msg+" ("+count + "/" + this.queue.length+")");
-    }
-     */
-
   }
 
   ,setStatus:function(type, msg) {

@@ -1,3 +1,13 @@
+/*
+** examples.js for Ext.ux.upload
+**
+** Made by Gary van Woerkens
+** Contact <gary@chewam.com>
+**
+** Started on  Wed Jun  9 00:47:48 2010 Gary van Woerkens
+** Last update Wed Jun  9 00:48:03 2010 Gary van Woerkens
+*/
+
 Ext.onReady(function(){
 
   Ext.QuickTips.init();
@@ -10,9 +20,9 @@ Ext.onReady(function(){
     url:"upload.php"
     ,id:"uploader1"
     ,swfUrl:"swfupload.swf"
-    ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.mp4"
+    ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.mp4;*.zip"
     ,maxFileSize:0
-    ,maxFiles:0
+    ,maxFiles:10
     ,listeners:{
       beforeupload:function() {
 	// Return false to cancel upload.
@@ -263,6 +273,7 @@ Ext.onReady(function(){
 	   ,plugins:[uploader3]
 	   ,listeners:{
 	     fileupload:function() {
+	       console.log('fileupload', this, arguments);
 	       store3.load({params:{xaction:"read"}});
 	     }
 	   }
