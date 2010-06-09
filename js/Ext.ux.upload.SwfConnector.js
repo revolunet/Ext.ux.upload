@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:03:44 2010 Gary van Woerkens
-** Last update Wed Jun  9 00:37:16 2010 Gary van Woerkens
+** Last update Wed Jun  9 02:04:14 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -163,6 +163,8 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
       ,file_dialog_complete_handler:this.onFileDialogComplete.createDelegate(this)
     });
   }
+
+  // HANDLERS
 
   ,onSwfuploadLoaded:function() {
     this.loaded = true;

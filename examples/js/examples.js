@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed Jun  9 00:47:48 2010 Gary van Woerkens
-** Last update Wed Jun  9 00:48:03 2010 Gary van Woerkens
+** Last update Wed Jun  9 01:46:49 2010 Gary van Woerkens
 */
 
 Ext.onReady(function(){
@@ -17,9 +17,8 @@ Ext.onReady(function(){
    * *****************************************************************/
 
   var uploader = new Ext.ux.upload.Uploader({
-    url:"upload.php"
-    ,id:"uploader1"
-    ,swfUrl:"swfupload.swf"
+    url:"php/upload.php"
+    ,swfUrl:"swf/swfupload.swf"
     ,allowedFileTypes:"*.png;*.jpg;*.jpeg;*.gif;*.mp4;*.zip"
     ,maxFileSize:0
     ,maxFiles:10
@@ -56,11 +55,11 @@ Ext.onReady(function(){
   });
 
   var store = new Ext.data.JsonStore({
-    url:"getfiles.php",
+    url:"php/getfiles.php",
     root:"data",
     autoLoad:true,
     baseParams:{
-      folder:"uploads"
+      folder:"dataview"
       ,xaction:"read"
     },
     fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
@@ -136,20 +135,19 @@ Ext.onReady(function(){
    * *****************************************************************/
 
   var uploader2 = new Ext.ux.upload.Uploader({
-    url:"upload2.php"
-    ,id:"uploader2"
-    ,swfUrl:"swfupload.swf"
+    url:"php/upload2.php"
+    ,swfUrl:"swf/swfupload.swf"
     ,allowedFileTypes:"*.*"
     ,maxFileSize:1024
     ,maxFiles:2
   });
 
   var store2 = new Ext.data.JsonStore({
-    url:"getfiles.php",
+    url:"php/getfiles.php",
     root:"data",
     autoLoad:true,
     baseParams:{
-      folder:"uploads2"
+      folder:"grid"
       ,xaction:"read"
     },
     fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
@@ -166,7 +164,6 @@ Ext.onReady(function(){
     ,items:[{
       xtype:"grid"
       ,store:store2
-      ,uploadLogPanelTarget:true
       ,plugins:[uploader2]
       ,autoExpandColumn:"name"
       ,bodyStyle:"border:1px solid #99BBE8;"
@@ -209,9 +206,9 @@ Ext.onReady(function(){
    * *****************************************************************/
 
   var uploader3 = new Ext.ux.upload.Uploader({
-    url:"upload3.php"
+    url:"php/upload3.php"
     ,id:"uploader3"
-    ,swfUrl:"swfupload.swf"
+    ,swfUrl:"swf/swfupload.swf"
     ,disableLogPanel:true
     ,allowedFileTypes:"*.jpg;*.png;*.gif"
     ,maxFileSize:1024
@@ -229,18 +226,18 @@ Ext.onReady(function(){
   });
 
   var store3 = new Ext.data.JsonStore({
-    url:"getfiles.php",
+    url:"php/getfiles.php",
     root:"data",
     autoLoad:true,
     baseParams:{
-      folder:"uploads3"
+      folder:"form"
       ,xaction:"read"
     },
     fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
     ,listeners:{
       load:function(store, records) {
 	if (records.length)
-	  photo.update('<img height=71 width=88 src="uploads3/'+records[0].get("name")+'?nocach='+Ext.id()+'" />');
+	  photo.update('<img height=71 width=88 src="uploads/form/'+records[0].get("name")+'?nocach='+Ext.id()+'" />');
       }
     }
   });
@@ -273,7 +270,6 @@ Ext.onReady(function(){
 	   ,plugins:[uploader3]
 	   ,listeners:{
 	     fileupload:function() {
-	       console.log('fileupload', this, arguments);
 	       store3.load({params:{xaction:"read"}});
 	     }
 	   }

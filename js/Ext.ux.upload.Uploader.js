@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Wed Jun  9 00:46:59 2010 Gary van Woerkens
+** Last update Wed Jun  9 01:59:40 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -136,6 +136,12 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   ,enableLogPanel:true
 
+  /**
+   * An array of opened connections.
+   * @type {Array}
+   * @property connections
+   */
+
   ,init:function(cmp) {
     var triggers = ["button", "menuitem"];
     var dropZones = [
@@ -248,6 +254,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 
   /**
    * Returns the panel to log upload events.
+   * @return {Object} panel {@link Ext.ux.Dialog} or {@link Ext.Window}
    */
   ,getLogPanel:function() {
     if (!this.logPanel) {
@@ -295,6 +302,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
   }
 
   // HANDLERS
+
   ,onBeforeUpload:function(conn, fileCount) {
     this.fireEvent("beforeupload", this, conn, fileCount);
   }

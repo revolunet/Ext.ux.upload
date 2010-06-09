@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:02:46 2010 Gary van Woerkens
-** Last update Wed Jun  9 00:47:18 2010 Gary van Woerkens
+** Last update Wed Jun  9 01:59:43 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -261,6 +261,8 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
     var reg = "^.*\.("+t.join("|")+")$";
     return new RegExp(reg, "g");
   }
+
+  // HANDLERS
 
   ,onUploadStart:function(file, e) {
     this.fireEvent("start", this, file);

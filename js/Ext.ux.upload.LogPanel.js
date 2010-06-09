@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Wed Jun  9 00:48:25 2010 Gary van Woerkens
+** Last update Wed Jun  9 02:04:27 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -21,22 +21,48 @@ Ext.ns('Ext.ux.upload');
  */
 Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
-  boundEl:null
-  ,win:null
-
-  ,progressTpl:new Ext.Template(
+  /**
+   * @cfg String url
+   * The URL where files will be uploaded.
+   */
+  progressTpl:new Ext.Template(
     '<div ext:qtip="{msg}"'
     + 'class="x-progress-text-{type}"'
     + '>'
     + '{text}'
     + '</div>'
   )
-
+  /**
+   * @cfg String url
+   * The URL where files will be uploaded.
+   */
   ,border:false
+  /**
+   * @cfg String url
+   * The URL where files will be uploaded.
+   */
   ,padding:"2"
+  /**
+   * @cfg String url
+   * The URL where files will be uploaded.
+   */
   ,defaults:{style:"margin:0 0 2 0"}
+  /**
+   * @cfg String url
+   * The URL where files will be uploaded.
+   */
   ,bodyStyle:"background-color:#DFE8F6"
+  /**
+   * @cfg String url
+   * The URL where files will be uploaded.
+   */
   ,autoScroll:true
+
+  /**
+   * True if SWFUpload has been loaded.
+   * @type {Boolean}
+   * @property queue
+   */
 
   ,initComponent:function() {
 
@@ -135,59 +161,3 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 });
 
 Ext.reg('uploadlogspanel', Ext.ux.upload.LogPanel);
-
-
-
-
-
-
-
-
-
-
-
-
-
-Ext.ns('Ext.ux');
-
-Ext.ux.DialogX = Ext.extend(Ext.Panel, {
-
-  height:140
-  ,width:350
-  ,frame:true
-  ,layout:"fit"
-  ,floating:true
-  ,dialogEl:null
-  ,hidden:true
-
-  ,initComponent:function() {
-
-    this.tools = [{
-      id:"close"
-      ,scope:this
-      ,handler:function(event, el, win){
-	this.close();
-      }
-    }];
-
-    Ext.ux.DialogX.superclass.initComponent.call(this);
-
-    this.on({
-      scope:this
-      ,show:function() {
-	this.dialogEl.mask();
-	this.getEl().anchorTo(this.dialogEl, "c-c");
-	this.doLayout();
-      }
-    });
-
-  }
-
-  ,close:function() {
-    this.hide();
-    this.dialogEl.unmask();
-  }
-
-});
-
-Ext.reg('dialogpanel', Ext.ux.DialogX);

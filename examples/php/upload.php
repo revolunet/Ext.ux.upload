@@ -1,16 +1,9 @@
 <?php
 header('Content-Type:text/plain');
 $success = 'false';
-$path = 'uploads';
+$path = '../uploads/dataview';
 
 if (!strlen($_SERVER['HTTP_X_FILE_NAME'])) {
-  /*
-  $fp = fopen($path.'/log', 'a');
-  fwrite($fp, "upload:\n");
-  fwrite($fp, serialize($_FILES)."\n");
-  //fwrite($fp, serialize($file['name']));
-  fclose($fp);
-  */
   foreach($_FILES as $file) {
     $path .= "/" . basename($file['name']);
     if (move_uploaded_file($file['tmp_name'], $path))
