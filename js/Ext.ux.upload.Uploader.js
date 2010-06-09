@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Wed Jun  9 01:59:40 2010 Gary van Woerkens
+** Last update Wed Jun  9 05:24:02 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -266,7 +266,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 
   ,getLogPanelFrame:function(panel) {
     if (this.dialogEl) {
-      return new Ext.ux.DialogX({
+      return new Ext.ux.Dialog({
 	height:140
 	,width:350
 	,layout:"fit"
