@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Wed Jun  9 04:11:47 2010 Gary van Woerkens
+** Last update Wed Jun  9 20:30:05 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -24,12 +24,47 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
    * The {@link Ext.Template template} used to display file {@link Ext.ProgressBar progress} messages.
    */
   progressTpl:new Ext.Template(
-    '<div ext:qtip="{msg}"'
-    + 'class="x-progress-text-{type}"'
-    + '>'
-    + '{text}'
-    + '</div>'
+    '<div ext:qtip="{msg}" class="x-progress-text-{type}">{text}</div>'
   )
+  /**
+   * @cfg {String} lang
+   * The language to display log panel messages (default to "en").
+   */
+  ,lang:"en"
+  /**
+   * @cfg {Object} langs
+   * Available languages to load on init with {@link Ext.ux.upload.LogPanel#lang lang}.
+   * <code><pre>
+  ,langs:{
+    en:{
+      emptyListButtonTooltip:"Empty list"
+      ,progressStatus:"Loading..."
+      ,uploadComplete:"Upload complete"
+      ,uploadingStatus:'Uploading {count > 1 ? "files" : "file"}'
+    }
+    ,fr:{
+      emptyListButtonTooltip:"vider la liste des téléchargements"
+      ,progressStatus:"Chargement..."
+      ,uploadComplete:"Envoi terminé "
+      ,uploadingStatus:'Envoi {count > 1 ? "des fichiers" : "du fichier"}'
+    }
+  }
+   * </code></pre>
+   */
+  ,langs:{
+    en:{
+      emptyListButtonTooltip:"Empty list"
+      ,progressStatus:"Loading..."
+      ,uploadComplete:"Upload complete"
+      ,uploadingStatus:'Uploading {count > 1 ? "files" : "file"}'
+    }
+    ,fr:{
+      emptyListButtonTooltip:"Vider la liste des téléchargements"
+      ,progressStatus:"Chargement..."
+      ,uploadComplete:"Envoi terminé "
+      ,uploadingStatus:'Envoi {count > 1 ? "des fichiers" : "du fichier"}'
+    }
+  }
 
   /**
    * Array of Files in queue.
@@ -41,12 +76,17 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
     this.queue = [];
 
+    this.lang = this.langs[this.lang] || this.langs["en"];
+
+    this.uploadingStatusTpl = new Ext.Template(this.l.uploadingStatus);
+
     this.bbar = new Ext.ux.StatusBar({
       height:27
       ,style:"border:1px solid #99BBE8;"
       ,items:[{
 	iconCls:"icon-eraser"
-	,tooltip:"vider la liste des téléchargements"
+//	,tooltip:"vider la liste des téléchargements"
+	,tooltip:this.lang.emptyListButtonTooltip
 	,scope:this
 	,handler:this.cleanLogPanel
       }]
@@ -67,7 +107,7 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
   }
 
   /**
-   * Remove all {@link Ext.ProgressBar progress} bars.
+   * Removes all {@link Ext.ProgressBar progress} bars.
    */
   ,cleanLogPanel:function() {
     this.removeAll();
@@ -114,12 +154,12 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
     }));
     if (config.type === "loading") {
       count = this.queue.length - this.getUploadingCount() + 1,
-      msg = "envoi " + (this.queue.length > 1 ? "des fichiers" : "du fichier");
+      msg = this.uploadingStatusTpl.apply({count:this.queue.length});
     } else if (config.type === "success" || config.type === "error") {
       config.type = "info";
       p.isUploading = false;
       var count = this.queue.length - this.getUploadingCount(),
-      msg = "envoi terminé ";
+      msg = this.lang.uploadComplete;
     }
     this.setStatus(config.type, msg+" ("+count + "/" + this.queue.length+")");
   }

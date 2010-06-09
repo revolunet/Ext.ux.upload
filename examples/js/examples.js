@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed Jun  9 00:47:48 2010 Gary van Woerkens
-** Last update Wed Jun  9 04:30:42 2010 Gary van Woerkens
+** Last update Wed Jun  9 19:22:20 2010 Gary van Woerkens
 */
 
 Ext.onReady(function(){
@@ -256,7 +256,7 @@ Ext.onReady(function(){
        layout:"form"
        ,region:"center"
        ,padding:"5"
-       ,labelWidth:60
+       ,labelWidth:70
        ,items:[{
 	 xtype:"compositefield"
 	 ,anchor:"0"
