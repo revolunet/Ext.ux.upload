@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed Jun  9 00:47:48 2010 Gary van Woerkens
-** Last update Wed Jun  9 01:46:49 2010 Gary van Woerkens
+** Last update Wed Jun  9 04:30:42 2010 Gary van Woerkens
 */
 
 Ext.onReady(function(){
@@ -109,7 +109,7 @@ Ext.onReady(function(){
       multiSelect: true,
       overClass:'x-view-over',
       itemSelector:'div.thumb-wrap',
-      emptyText: 'No images to display',
+      emptyText: 'No item to display',
       prepareData: function(data){
         data.shortName = Ext.util.Format.ellipsis(data.name, 15);
         data.sizeString = Ext.util.Format.fileSize(data.size);

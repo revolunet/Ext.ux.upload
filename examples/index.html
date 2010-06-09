@@ -7,6 +7,19 @@
     <link rel="stylesheet" type="text/css" href="http://lib.chewam.net/ext/resources/css/ext-all.css" />
     <link rel="stylesheet" type="text/css" href="css/data-view.css" />
     <link rel="stylesheet" type="text/css" href="../css/Ext.ux.upload.css" />
+    <style>
+      body {padding:20px;}
+      h1 {
+        font-size: large;
+        font-family: helvetica, tahoma, verdana, sans-serif;
+        margin-bottom: 20px;
+      }
+      p, ul {
+        font-family: helvetica, tahoma, verdana, sans-serif;
+        font-size: 13px;
+        margin-bottom: 15px;
+      }
+    </style>
 
     <script type="text/javascript" src="http://lib.chewam.net/ext/adapter/ext/ext-base-debug.js"></script>
     <script type="text/javascript" src="http://lib.chewam.net/ext/ext-all-debug.js"></script>
@@ -15,7 +28,7 @@
     <script type="text/javascript" src="js/swfupload.queue.js"></script>
     <script type="text/javascript" src="js/swfupload.cookies.js"></script>
 
-    <script type="text/javascript" src="js/StatusBar.js"></script>
+    <script type="text/javascript" src="../js/Ext.ux.StatusBar.js"></script>
     <script type="text/javascript" src="../js/Ext.ux.Dialog.js"></script>
     <script type="text/javascript" src="../js/Ext.ux.upload.LogPanel.js"></script>
     <script type="text/javascript" src="../js/Ext.ux.upload.SwfConnector.js"></script>
@@ -27,10 +40,33 @@
   </head>
 
   <body>
-    <div style="margin:20px;"><a href="../doc/" style="font:bold 11px tahoma,arial,verdana,sans-serif;color:#15428B;">Documentation</a></div>
+
+    <h1>Uploader examples</h1>
+
+    <p>
+      <a href="../doc/" style="font:bold 13px helvetica, tahoma, verdana, sans-serif;color:#15428B;">Documentation</a>
+    </p>
+
+    <ul>
+      <li>Uploader in Ext.Button with SWFUplaod</li>
+      <li>Uploader in Ext.menu.Item with SWFUplaod</li>
+      <li>Uplaoder in Ext.DataView with HTML5</li>
+      <li>Log panel in Ext.ux.Dialog</li>
+    </ul>
     <div style="margin:20px;" id="dataview"></div>
+
+    <ul>
+      <li>Uploader in Ext.grid.GridPanel</li>
+      <li>Log panel in Ext.Window</li>
+    </ul>
     <div style="margin:20px;" id="gridpanel"></div>
+
+    <ul>
+      <li>Uploader in Ext.Panel</li>
+      <li>No log panel</li>
+    </ul>
     <div style="margin:20px;" id="form"></div>
+
   </body>
 
 </html>

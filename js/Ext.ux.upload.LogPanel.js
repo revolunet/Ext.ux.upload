@@ -5,25 +5,23 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Wed Jun  9 02:04:27 2010 Gary van Woerkens
+** Last update Wed Jun  9 04:11:47 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
 
 /**
  * @class Ext.ux.upload.LogPanel
- * @extends Ext.util.Observable
- * The AuthPanel is a simple panel used as a container for two components :<br/>
- * The application combobox to select available applications. <br/>
- * The AuthTab panels displaying application's meta-groups.<br/>
+ * @extends Ext.Panel
+ *
  * @author Gary van Woerkens
  * @version 1.0
  */
 Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
   /**
-   * @cfg String url
-   * The URL where files will be uploaded.
+   * @cfg {Ext.Template} progressTpl
+   * The {@link Ext.Template template} used to display file {@link Ext.ProgressBar progress} messages.
    */
   progressTpl:new Ext.Template(
     '<div ext:qtip="{msg}"'
@@ -32,35 +30,10 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
     + '{text}'
     + '</div>'
   )
-  /**
-   * @cfg String url
-   * The URL where files will be uploaded.
-   */
-  ,border:false
-  /**
-   * @cfg String url
-   * The URL where files will be uploaded.
-   */
-  ,padding:"2"
-  /**
-   * @cfg String url
-   * The URL where files will be uploaded.
-   */
-  ,defaults:{style:"margin:0 0 2 0"}
-  /**
-   * @cfg String url
-   * The URL where files will be uploaded.
-   */
-  ,bodyStyle:"background-color:#DFE8F6"
-  /**
-   * @cfg String url
-   * The URL where files will be uploaded.
-   */
-  ,autoScroll:true
 
   /**
-   * True if SWFUpload has been loaded.
-   * @type {Boolean}
+   * Array of Files in queue.
+   * @type {Array}
    * @property queue
    */
 
@@ -93,14 +66,25 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
   }
 
+  /**
+   * Remove all {@link Ext.ProgressBar progress} bars.
+   */
   ,cleanLogPanel:function() {
     this.removeAll();
   }
 
+  /**
+   * Returns the {@link Ext.ux.StatusBar} where logs are displayed.
+   * @return {Ext.ux.StatusBar}
+   */
   ,getStatusBar:function() {
     return this.getBottomToolbar();
   }
 
+  /**
+   * Adds a {@link Ext.ProgressBar} to log panel.
+   * @param {Object} file
+   */
   ,addProgress:function(file) {
     if (this.getProgress(file.id) === false) {
       var p = new Ext.ProgressBar({
@@ -116,6 +100,10 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
     }
   }
 
+  /**
+   * Updates a {@link Ext.ProgressBar progress} bar already added to log panel.
+   * @param {Object} config The progress config
+   */
   ,updateProgress:function(config) {
     var toolbar = this.getStatusBar(),
     p = this.getProgress(config.file.id);
@@ -136,6 +124,12 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
     this.setStatus(config.type, msg+" ("+count + "/" + this.queue.length+")");
   }
 
+  /**
+   * Set global upload status.
+   * Logs are displayed in the {@link Ext.ux.StatusBar bottom toolbar}.
+   * @param {String} type Type of log can be "loading", "success" or "error"
+   * @param {String} msg Message to log.
+   */
   ,setStatus:function(type, msg) {
     this.getStatusBar().setStatus({
       text:msg
@@ -143,6 +137,11 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
     });
   }
 
+  /**
+   * Returns the count of files in the {@link Ext.ux.upload.LogPanel#queue queue}
+   * which are not uploaded yet.
+   * @return {Number}
+   */
   ,getUploadingCount:function() {
     var count = 0;
     Ext.each(this.queue, function(item) {
@@ -151,6 +150,10 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
     return count;
   }
 
+  /**
+   * Returns the {@link Ext.ProgressBar progress} bar from id.
+   * @param {String} id The progress id
+   */
   ,getProgress:function(id) {
     var index = Ext.each(this.queue, function(item, index) {
       return !(item.id === id);
