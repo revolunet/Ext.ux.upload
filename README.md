@@ -1,4 +1,4 @@
-Ext.ux.UploadManager.js
+Ext.ux.upload
 ====================
 
 see docs folder for ExtJs style documentation
@@ -27,7 +27,7 @@ For the upload/flash to work, you need to host this on a http server !
 
 **requirements**
 
- * [ExtJs][2] >= 3.1
+ * [ExtJs][2] >= 3.2.1
 
 
 
