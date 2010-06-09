@@ -5,10 +5,10 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed Jun  9 00:47:48 2010 Gary van Woerkens
-** Last update Wed Jun  9 19:22:20 2010 Gary van Woerkens
+** Last update Wed Jun  9 20:45:45 2010 Gary van Woerkens
 */
 
-Ext.onReady(function(){
+Ext.onReady(function() {
 
   Ext.QuickTips.init();
 
@@ -250,9 +250,7 @@ Ext.onReady(function(){
      ,width:535
      ,height:210
      ,layout:"border"
-     ,items:[
-       photo
-     , {
+     ,items:[photo, {
        layout:"form"
        ,region:"center"
        ,padding:"5"
