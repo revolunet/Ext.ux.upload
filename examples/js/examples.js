@@ -5,12 +5,139 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed Jun  9 00:47:48 2010 Gary van Woerkens
-** Last update Wed Jun  9 20:45:45 2010 Gary van Woerkens
+** Last update Thu Jun 10 23:24:56 2010 Gary van Woerkens
 */
 
 Ext.onReady(function() {
 
   Ext.QuickTips.init();
+
+  /*******************************************************************
+   * DATAVIEW ********************************************************
+   * *****************************************************************/
+
+  var uploader4 = new Ext.ux.upload.Uploader({
+    url:"/dev/upload/examples/php/upload4.php"
+    ,swfUrl:"swf/swfupload.swf"
+    ,allowedFileTypes:"*.*"
+    ,maxFileSize:0
+    ,maxFiles:10
+    ,listeners:{
+      beforeupload:function() {
+	// Return false to cancel upload.
+      }
+    }
+  });
+
+  new Ext.Panel({
+    layout:"hbox"
+    ,renderTo:"border"
+    ,width:535
+    ,height:30
+    ,border:false
+    ,layoutConfig:{
+      padding:"0 0 5 0"
+      ,align:'stretch'
+    }
+    ,defaults:{margins:'0 5 0 0'}
+    ,items:[{
+      text:"upload to border layout"
+      ,xtype:"button"
+      ,plugins:[uploader4]
+    }]
+  });
+
+  var store4 = new Ext.data.JsonStore({
+    url:"php/getfiles.php",
+    root:"data",
+    autoLoad:true,
+    baseParams:{
+      folder:"border"
+      ,xaction:"read"
+    },
+    fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+  });
+
+  var tpl4 = new Ext.XTemplate(
+    '<tpl for=".">',
+    '<div class="thumb-wrap" id="{name}">',
+    '<div class="thumb"><img src="http://cdn.iconfinder.net/data/icons/Basic_set2_Png/64/document.png" title="{name}"></div>',
+    '<span class="x-editable">{shortName}</span></div>',
+    '</tpl>',
+    '<div class="x-clear"></div>'
+  );
+
+  var dataview = new Ext.DataView({
+    store:store4,
+    tpl:tpl4,
+    region:"center",
+    autoScroll:true,
+    multiSelect: true,
+    overClass:'x-view-over',
+    itemSelector:'div.thumb-wrap',
+    emptyText: 'No item to display',
+    style:"border-right:1px solid #99BBE8",
+    prepareData: function(data){
+      data.shortName = Ext.util.Format.ellipsis(data.name, 15);
+      data.sizeString = Ext.util.Format.fileSize(data.size);
+      data.dateString = data.lastmod.format("m/d/Y g:i a");
+      return data;
+    }
+  });
+
+  var eastPanel = new Ext.Panel({
+    region:"east"
+    ,split:true
+    ,collapsed:true
+    ,collapseMode:"mini"
+    ,border:false
+    ,layout:"fit"
+    ,width:200
+  });
+
+  uploader4.setLogFrame(eastPanel);
+
+  uploader4.on({
+    beforeupload:function() {
+      if (eastPanel.collapsed) {
+	eastPanel.expand();
+      }
+    }
+    ,queuecomplete:function() {
+      eastPanel.collapse.defer(2000, eastPanel);
+    }
+  });
+
+  new Ext.Panel({
+    cls:'images-view',
+    frame:true,
+    width:535,
+    height:250,
+    renderTo:"border",
+    collapsible:true,
+    layout:'border',
+    title:'Simple BorderLayout',
+    plugins:[uploader4],
+    collapseFirst:false,
+    bodyStyle:"border:1px solid #99BBE8;",
+    tools:[{
+      id:"gear"
+      ,scope:store4
+      ,qtip:"remove all files"
+      ,handler:function() {this.load({params:{xaction:"removeall"}});}
+    }, {
+      id:"refresh"
+      ,scope:store4
+      ,qtip:"refresh"
+      ,handler:function() {this.load({params:{xaction:"read"}});}
+    }],
+    listeners: {
+      uploadcomplete:function(uploader, target, file) {
+	store4.load({params:{xaction:"read"}});
+      }
+    },
+    items:[dataview, eastPanel]
+  });
 
   /*******************************************************************
    * DATAVIEW ********************************************************
@@ -75,7 +202,7 @@ Ext.onReady(function() {
   );
 
   var panel = new Ext.Panel({
-    id:'images-view',
+    cls:'images-view',
     frame:true,
     width:535,
     height:250,
@@ -98,7 +225,7 @@ Ext.onReady(function() {
       ,handler:function() {this.load({params:{xaction:"read"}});}
     }],
     listeners: {
-      fileupload:function(uploader, target, file) {
+      uploadcomplete:function(uploader, target, file) {
 	this.items.items[0].getStore().load({params:{xaction:"read"}});
       }
     },
@@ -115,15 +242,6 @@ Ext.onReady(function() {
         data.sizeString = Ext.util.Format.fileSize(data.size);
         data.dateString = data.lastmod.format("m/d/Y g:i a");
         return data;
-      },
-      listeners: {
-        selectionchange: {
-          fn: function(dv,nodes){
-            var l = nodes.length;
-            var s = l != 1 ? 's' : '';
-            panel.setTitle('Simple DataView ('+l+' item'+s+' selected)');
-          }
-        }
       }
     })
   });
@@ -172,7 +290,7 @@ Ext.onReady(function() {
 	,{dataIndex:"lastmod", header:"Last modification"}
       ]
       ,listeners: {
-	fileupload:function(uploader, target, file) {
+	uploadcomplete:function(uploader, target, file) {
 	  this.getStore().load({params:{xaction:"read"}});
 	}
       }
@@ -180,7 +298,7 @@ Ext.onReady(function() {
     ,collapseFirst:false
     ,tools:[{
       id:"gear"
-      ,scope:store
+      ,scope:store2
       ,qtip:"remove all files"
       ,handler:function() {this.load({params:{xaction:"removeall"}});}
     } ,{
@@ -267,7 +385,7 @@ Ext.onReady(function() {
 	   ,text:"image"
 	   ,plugins:[uploader3]
 	   ,listeners:{
-	     fileupload:function() {
+	     uploadcomplete:function() {
 	       store3.load({params:{xaction:"read"}});
 	     }
 	   }

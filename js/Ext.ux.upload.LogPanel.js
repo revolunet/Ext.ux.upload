@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Wed Jun  9 20:30:05 2010 Gary van Woerkens
+** Last update Thu Jun 10 23:18:36 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -78,14 +78,13 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
     this.lang = this.langs[this.lang] || this.langs["en"];
 
-    this.uploadingStatusTpl = new Ext.Template(this.l.uploadingStatus);
+    this.uploadingStatusTpl = new Ext.Template(this.lang.uploadingStatus);
 
     this.bbar = new Ext.ux.StatusBar({
       height:27
       ,style:"border:1px solid #99BBE8;"
       ,items:[{
 	iconCls:"icon-eraser"
-//	,tooltip:"vider la liste des téléchargements"
 	,tooltip:this.lang.emptyListButtonTooltip
 	,scope:this
 	,handler:this.cleanLogPanel
@@ -94,16 +93,19 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
     Ext.ux.upload.LogPanel.superclass.initComponent.call(this);
 
-    this.on({
-      afterrender:function() {
-	Ext.apply(this.ownerCt, {
-	  addProgress:this.addProgress.createDelegate(this)
-	  ,updateProgress:this.updateProgress.createDelegate(this)
-	  ,setStatus:this.setStatus.createDelegate(this)
-	});
-      }
-    });
+    this.on({added:this.bindContainer});
 
+  }
+
+  /**
+   *
+   */
+  ,bindContainer:function(logpanel, ctn, index) {
+    Ext.apply(ctn, {
+      addProgress:this.addProgress.createDelegate(this)
+      ,updateProgress:this.updateProgress.createDelegate(this)
+      ,setStatus:this.setStatus.createDelegate(this)
+    });
   }
 
   /**

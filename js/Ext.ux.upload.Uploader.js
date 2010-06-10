@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Thu Jun 10 23:33:58 2010 Gary van Woerkens
+** Last update Thu Jun 10 23:34:51 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -51,6 +51,7 @@ Ext.ux.upload.Uploader = function(config) {
   Ext.apply(this, config);
 
   this.connections = [];
+  this.queue = 0;
 
   this.swfParams = config.swfParams || {};
   Ext.apply(this.swfParams, {
@@ -69,6 +70,8 @@ Ext.ux.upload.Uploader = function(config) {
     ,maxFiles:this.maxFiles
   });
 
+//  if (this.enableLogPanel) this.createLogPanel();
+
   this.addEvents(
     /**
      * @event beforeupload Fires just before files upload. Return false to cancel upload.
@@ -77,12 +80,26 @@ Ext.ux.upload.Uploader = function(config) {
      */
     "beforeupload"
     /**
-     * @event fileupload Fires when a file has been uploaded.
+     * @event uploadstart
      * @param {Ext.ux.upload.Uploader} this
      * @param {Object} conn The upload connector
      * @param {Object} file The uploaded file
      */
-    ,"fileupload"
+    ,"uploadstart"
+    /**
+     * @event uploadcomplete Fires when a file has been uploaded.
+     * @param {Ext.ux.upload.Uploader} this
+     * @param {Object} conn The upload connector
+     * @param {Object} file The uploaded file
+     */
+    ,"uploadcomplete"
+    /**
+     * @event queuecomplete
+     * @param {Ext.ux.upload.Uploader} this
+     * @param {Object} conn The upload connector
+     * @param {Object} file The uploaded file
+     */
+    ,"queuecomplete"
   );
 
   Ext.ux.upload.Uploader.superclass.constructor.call(this);
@@ -92,12 +109,12 @@ Ext.ux.upload.Uploader = function(config) {
 
 Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 
-  dialogEl:null
+//  dialogEl:null
   /**
    * @cfg String url
    * The URL where files will be uploaded.
    */
-  ,url:""
+  url:""
   /**
    * @cfg String swfUrl
    * The URL form which to request swfupload object.
@@ -140,6 +157,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    * An array of opened connections.
    * @type {Array}
    * @property connections
+   */
+  /**
+   * An array of files.
+   * @type {Array}
+   * @property queue
    */
 
   ,init:function(cmp) {
@@ -253,18 +275,35 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
   }
 
   /**
+   *
+   */
+  ,setLogFrame:function(frame) {
+    var panel = this.getLogPanel();
+    frame.add(panel);
+    frame.doLayout();
+    this.logPanel = frame;
+  }
+
+  ,createLogPanel:function() {
+    var frame = this.getLogFrame(),
+    panel = this.getLogPanel();
+    frame.add(panel);
+    frame.doLayout();
+    this.logPanel = frame;
+  }
+
+  /**
    * Returns the panel to log upload events.
    * @return {Object} panel {@link Ext.ux.Dialog} or {@link Ext.Window}
    */
   ,getLogPanel:function() {
-    if (!this.logPanel) {
-      var panel = new Ext.ux.upload.LogPanel();
-      this.logPanel = this.getLogPanelFrame(panel);
-    }
-    return this.logPanel;
+    return new Ext.ux.upload.LogPanel({
+//      hidden:true
+//      ,renderTo:Ext.getBody()
+    });
   }
 
-  ,getLogPanelFrame:function(panel) {
+  ,getLogFrame:function(panel) {
     if (this.dialogEl) {
       return new Ext.ux.Dialog({
 	height:140
@@ -273,7 +312,6 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 	,border:false
 	,closeAction:"hide"
 	,dialogEl:this.dialogEl
-	,items:[panel]
       }).render(Ext.getBody());
     } else {
       return new Ext.Window({
@@ -282,7 +320,6 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 	,layout:"fit"
 	,border:false
 	,closeAction:"hide"
-	,items:[panel]
       });
     }
   }
@@ -304,21 +341,24 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
   // HANDLERS
 
   ,onBeforeUpload:function(conn, fileCount) {
+    this.queue += fileCount;
+    if (this.enableLogPanel && !this.logPanel)
+      this.createLogPanel();
     this.fireEvent("beforeupload", this, conn, fileCount);
   }
 
   ,onUploadStart:function(conn, file) {
     if (this.enableLogPanel) {
-      var panel = this.getLogPanel();
-      this.getLogPanel().show();
-      this.getLogPanel().addProgress(file);
-      this.getLogPanel().setStatus("loading", "en attente...");
+      this.logPanel.show();
+      this.logPanel.addProgress(file);
+      this.logPanel.setStatus("loading", "en attente...");
     }
+    this.fireEvent("uploadstart", this, conn, file);
   }
 
   ,onUploadProgress:function(conn, file, uploaded) {
     if (this.enableLogPanel) {
-      this.getLogPanel().updateProgress({
+      this.logPanel.updateProgress({
 	file:file
 	,type:"loading"
 	,progress:uploaded
@@ -328,27 +368,30 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 
   ,onUploadComplete:function(conn, file) {
     if (this.enableLogPanel) {
-      this.getLogPanel().updateProgress({
+      this.logPanel.updateProgress({
 	file:file
 	,progress:1
 	,type:"success"
       });
     }
-    this.fireEvent("fileupload", this, conn, file);
+    this.queue--;
+    this.fireEvent("uploadcomplete", this, conn, file);
+    if (this.queue === 0)
+      this.fireEvent("queuecomplete", this, conn);
   }
 
   ,onUploadError:function(conn, file, msg) {
     if (this.enableLogPanel) {
-      this.getLogPanel().show();
+      this.logPanel.show();
       if (file) {
-	this.getLogPanel().addProgress(file);
-	this.getLogPanel().updateProgress({
+	this.logPanel.addProgress(file);
+	this.logPanel.updateProgress({
 	  file:file
 	  ,progress:0
 	  ,type:"error"
 	  ,msg:msg
 	});
-      } else this.getLogPanel().setStatus("error", msg);
+      } else this.logPanel.setStatus("error", msg);
     }
   }
 
