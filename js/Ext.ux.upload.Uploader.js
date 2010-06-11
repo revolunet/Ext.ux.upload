@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Fri Jun 11 02:48:27 2010 Gary van Woerkens
+** Last update Fri Jun 11 23:06:16 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -181,7 +181,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       return dropZones.indexOf(xtype) > -1;
     };
     cmp.getUploader = getUploader.createDelegate(this);
-    cmp.relayEvents(this, ["fileupload", "beforeupload", "dragstart", "dragstop"]);
+    cmp.relayEvents(this, ["queuecomplete", "beforeupload", "dragstart", "dragstop"]);
     var xtype = cmp.getXType();
     if (isTrigger(xtype) !== false) {
       cmp.on({

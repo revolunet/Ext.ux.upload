@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:03:44 2010 Gary van Woerkens
-** Last update Fri Jun 11 02:47:16 2010 Gary van Woerkens
+** Last update Fri Jun 11 22:54:50 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -26,6 +26,10 @@ Ext.ns('Ext.ux.upload');
 Ext.ux.upload.SwfConnector = function(config) {
 
   Ext.apply(this, config);
+
+  this.lang = this.langs[this.lang] || this.langs["en"];
+  this.lang.maxFilesError = new Ext.Template(this.lang.maxFilesError);
+  this.lang.maxFileSizeError = new Ext.Template(this.lang.maxFileSizeError);
 
   this.addEvents(
     /**
@@ -109,6 +113,29 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
    * To allow all types of file to be uploaded use "*.*".
    */
   ,allowedFileTypes:"*.*"
+  /**
+   * @cfg {String} lang
+   * The language to display log panel messages (default to "en").
+   */
+  ,lang:"en"
+  /**
+   * @cfg {Object} langs
+   * Available languages to load on init with {@link Ext.ux.upload.LogPanel#lang lang}.
+   */
+  ,langs:{
+    en:{
+      maxFilesError:"Max number of files reached (max:{maxFiles})"
+      ,maxFileSizeError:"Max file size reached (max:{maxFileSize} KB)"
+      ,allowedFileTypeError:"File type not allowed"
+      ,serverError:"Cannot reach server"
+    }
+    ,fr:{
+      maxFilesError:"Trop de fichiers envoyés simultanément (max:{maxFiles})"
+      ,maxFileSizeError:"Taille limite atteinte (max:{maxFileSize} KB)"
+      ,allowedFileTypeError:"Type de fichier incorrect"
+      ,serverError:"Serveur injoignable"
+    }
+  }
 
   /**
    * True if SWFUpload has been loaded.
@@ -188,11 +215,13 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
   ,onFileQueueError:function(file, errorCode, errorMsg) {
     var msg = "";
     if (errorCode == -100)
-      msg = "trop de fichiers envoyés simultanément (max:"+this.maxFiles+")";
+      msg = this.lang.maxFileSizeError.apply({maxFiles:this.maxFiles});
+//      msg = "trop de fichiers envoyés simultanément (max:"+this.maxFiles+")";
     else if (errorCode == -110)
-      msg = "taille limite atteinte (max:"+this.maxFileSize+" KB)";
+      msg = this.lang.maxFilesError.apply({maxFileSize:this.maxFileSize});
+//      msg = "taille limite atteinte (max:"+this.maxFileSize+" KB)";
     else if (errorCode == -130)
-      msg = "type de fichier incorrect";
+      msg = this.lang.allowedFileTypeError;
     this.fireEvent("error", this, file, msg);
   }
 
@@ -205,7 +234,8 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
   }
 
   ,onUploadError:function(file) {
-    this.fireEvent("error", this, file, "serveur injoignable");
+    var msg = this.lang.serverError;
+    this.fireEvent("error", this, file, msg);
   }
 
   ,onUploadComplete:function(file) {
