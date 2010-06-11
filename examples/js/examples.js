@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed Jun  9 00:47:48 2010 Gary van Woerkens
-** Last update Thu Jun 10 23:24:56 2010 Gary van Woerkens
+** Last update Fri Jun 11 02:49:19 2010 Gary van Woerkens
 */
 
 Ext.onReady(function() {
@@ -76,7 +76,7 @@ Ext.onReady(function() {
     overClass:'x-view-over',
     itemSelector:'div.thumb-wrap',
     emptyText: 'No item to display',
-    style:"border-right:1px solid #99BBE8",
+    style:"border:1px solid #99BBE8",
     prepareData: function(data){
       data.shortName = Ext.util.Format.ellipsis(data.name, 15);
       data.sizeString = Ext.util.Format.fileSize(data.size);
@@ -119,7 +119,7 @@ Ext.onReady(function() {
     title:'Simple BorderLayout',
     plugins:[uploader4],
     collapseFirst:false,
-    bodyStyle:"border:1px solid #99BBE8;",
+//    bodyStyle:"border:1px solid #99BBE8;",
     tools:[{
       id:"gear"
       ,scope:store4
