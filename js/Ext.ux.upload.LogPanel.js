@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Fri Jun 11 02:48:36 2010 Gary van Woerkens
+** Last update Fri Jun 11 05:02:31 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -134,6 +134,8 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
       var p = new Ext.ProgressBar({
 	text:this.progressTpl.apply({type:"loading", text:file.name})
 	,isUploading:true
+	,style:"border-width:0 0 1px 0"
+//	,height:30
       });
       this.insert(0, p);
       this.doLayout();

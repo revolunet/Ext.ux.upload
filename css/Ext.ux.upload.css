@@ -1,10 +1,10 @@
 .x-toolbar div.xtb-text {
-  padding:3px 2px 0 21px !important;
+  padding:4px 2px 0 21px !important;
   height:18px;
 }
 
 .x-status-loading {
-  background: url(../img/loading.gif) no-repeat scroll 1px 2px transparent;
+  background: url(../img/loading.gif) no-repeat scroll 3px 4px transparent;
   font: 11px tahoma,arial,verdana,sans-serif !important;
 }
 
@@ -18,24 +18,28 @@
 }
 
 .x-status-info {
-  background: url(../img/info.png) no-repeat scroll 1px 2px transparent;
+  xbackground: url(../img/info.png) no-repeat scroll 1px 2px transparent;
+  background: url(http://cdn.iconfinder.net/data/icons/vaga/info.png) no-repeat scroll 3px 4px transparent;
 }
 
 .x-progress-text-error {
-  background: url(http://lib.chewam.net/famfamfam/exclamation.png) no-repeat scroll 0 0 transparent;
-  padding-left:19px;
+  xbackground: url(http://cdn.iconfinder.net/data/icons/fugue/icons/exclamation-diamond.png) no-repeat scroll 5px 0 transparent;
+  xbackground: url(http://cdn.iconfinder.net/data/icons/fatcow/16x16_0400/exclamation.png) no-repeat scroll 5px 0 transparent;
+  xbackground: url(http://cdn.iconfinder.net/data/icons/fugue/icon/exclamation_octagon.png) no-repeat scroll 5px 0 transparent;
+  background: url(http://cdn.iconfinder.net/data/icons/fugue/icon/exclamation.png) no-repeat scroll 5px 0 transparent;
+  padding-left:25px;
   text-align:left;
 }
 
 .x-progress-text-success {
-  background: url(../img/tick.png) no-repeat scroll 0 -1px transparent;
-  padding-left:19px;
+  background: url(../img/tick.png) no-repeat scroll 5px 0 transparent;
+  padding-left:25px;
   text-align:left;
 }
 
 .x-progress-text-loading {
-  background: url(../img/loading.gif) no-repeat scroll 0 0 transparent;
-  padding-left:19px;
+  background: url(../img/loading.gif) no-repeat scroll 5px 0 transparent;
+  padding-left:25px;
   text-align:left;
 }
 
