@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:03:44 2010 Gary van Woerkens
-** Last update Wed Jun  9 04:16:00 2010 Gary van Woerkens
+** Last update Fri Jun 11 02:47:16 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -141,7 +141,7 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
    */
   ,getSwfUpload:function() {
     return new SWFUpload({
-      debug:false
+      debug:true
       ,post_params:{}
       ,upload_url:this.url
       ,flash_url:this.swfUrl
@@ -204,8 +204,8 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
     this.fireEvent("progress", this, file, uploadedSize/totalSize);
   }
 
-  ,onUploadError:function() {
-    this.fireEvent("error", this, arguments);
+  ,onUploadError:function(file) {
+    this.fireEvent("error", this, file, "serveur injoignable");
   }
 
   ,onUploadComplete:function(file) {
