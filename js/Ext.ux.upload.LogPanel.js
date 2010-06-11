@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Thu Jun 10 23:18:36 2010 Gary van Woerkens
+** Last update Fri Jun 11 01:21:02 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -19,11 +19,12 @@ Ext.ns('Ext.ux.upload');
  */
 Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
+  autoScroll:true
   /**
    * @cfg {Ext.Template} progressTpl
    * The {@link Ext.Template template} used to display file {@link Ext.ProgressBar progress} messages.
    */
-  progressTpl:new Ext.Template(
+  ,progressTpl:new Ext.Template(
     '<div ext:qtip="{msg}" class="x-progress-text-{type}">{text}</div>'
   )
   /**
