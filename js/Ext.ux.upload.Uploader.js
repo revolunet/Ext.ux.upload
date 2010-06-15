@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Fri Jun 11 23:06:16 2010 Gary van Woerkens
+** Last update Tue Jun 15 15:45:39 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -298,8 +298,9 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   ,getLogPanel:function() {
     return new Ext.ux.upload.LogPanel({
-//      hidden:true
-//      ,renderTo:Ext.getBody()
+      listeners:{scope:this, close:function() {
+	  this.queue = 0;
+      }}
     });
   }
 
@@ -373,19 +374,21 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 	,progress:1
 	,type:"success"
       });
+      this.queue--;
+      this.fireEvent("uploadcomplete", this, conn, file);
+      if (this.queue === 0) {
+	this.logPanel.close();
+	this.fireEvent("queuecomplete", this, conn);
+      }
     }
-    this.queue--;
-    this.fireEvent("uploadcomplete", this, conn, file);
-    if (this.queue === 0)
-      this.fireEvent("queuecomplete", this, conn);
   }
 
   ,onUploadError:function(conn, file, msg) {
+    this.queue--;
     if (this.enableLogPanel) {
       if (!this.logPanel) this.createLogPanel();
       this.logPanel.show();
       if (file) {
-//	this.logPanel.addProgress(file);
 	this.logPanel.updateProgress({
 	  file:file
 	  ,progress:0
