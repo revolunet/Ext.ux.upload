@@ -116,6 +116,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   url:""
   /**
+   * @cfg Boolean debug
+   * Enable debug (SWFupload)
+   */
+  ,debug:false
+  /**
    * @cfg String swfUrl
    * The URL form which to request swfupload object.
    */
@@ -228,7 +233,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   ,setTrigger:function(cmp) {
     var pos = cmp.getEl().getXY();
-    var config, body,
+    var config, body, 
     btn = cmp.getEl().child("td.x-btn-mc") || cmp.getEl(),
     el = btn.insertHtml("beforeEnd",
       '<div id="'+Ext.id()+'">'
@@ -242,6 +247,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     config = {
       el:el
       ,body:body
+      ,debug:this.debug
       ,listeners:{
 	scope:this
 	,load:this.resizeTrigger.createDelegate(cmp)

@@ -52,7 +52,7 @@ Ext.ux.upload.SwfConnector = function(config) {
      * @event start Fires when a file upload start
      * @param {Ext.ux.upload.SwfConnector} this
      * @param {Object} file
-     */
+     */ 
     ,"start"
     /**
      * @event progress Fires when file upload progress
@@ -91,6 +91,11 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
    * The URL where files will be uploaded.
    */
   url:""
+   /**
+   * @cfg Boolean debug
+   * Enable debug (SWFupload)
+   */
+  ,debug:false
   /**
    * @cfg String swfUrl
    * The URL form which to request swfupload object.
@@ -168,7 +173,7 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
    */
   ,getSwfUpload:function() {
     return new SWFUpload({
-      debug:true
+      debug:this.debug
       ,post_params:{}
       ,upload_url:this.url
       ,flash_url:this.swfUrl
