@@ -57,13 +57,13 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
       emptyListButtonTooltip:"Empty list"
       ,progressStatus:"Loading..."
       ,uploadComplete:"Upload complete"
-      ,uploadingStatus:'Uploading {count > 1 ? "files" : "file"}'
+      ,uploadingStatus:'Uploading {[count > 1 ? "files" : "file"]}'
     }
     ,fr:{
       emptyListButtonTooltip:"Vider la liste des téléchargements"
       ,progressStatus:"Chargement..."
       ,uploadComplete:"Envoi terminé "
-      ,uploadingStatus:'Envoi {count > 1 ? "des fichiers" : "du fichier"}'
+      ,uploadingStatus:'Envoi {[count > 1 ? "des fichiers" : "du fichier"]}'
     }
   }
 
@@ -80,7 +80,7 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
     this.lang = this.langs[this.lang] || this.langs["en"];
 
-    this.uploadingStatusTpl = new Ext.Template(this.lang.uploadingStatus);
+    this.uploadingStatus = new Ext.Template(this.lang.uploadingStatus);
 
     this.bbar = new Ext.ux.StatusBar({
       height:27
@@ -160,7 +160,7 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
     }));
     if (config.type === "loading") {
       count = this.queue.length - this.getUploadingCount() + 1,
-      msg = this.uploadingStatusTpl.apply({count:this.queue.length});
+      msg = this.uploadingStatus.apply({count:this.queue.length});
     } else if (config.type === "success" || config.type === "error") {
       config.type = "info";
       p.isUploading = false;
