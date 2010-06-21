@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Mon Jun 21 12:01:35 2010 Gary van Woerkens
+** Last update Mon Jun 21 13:25:01 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -348,10 +348,12 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
   // HANDLERS
 
   ,onBeforeUpload:function(conn, fileCount) {
-    this.queue += fileCount;
-    if (this.enableLogPanel && !this.logPanel)
-      this.createLogPanel();
-    this.fireEvent("beforeupload", this, conn, fileCount);
+    if (this.fireEvent("beforeupload", this, conn, fileCount) !== false) {
+       this.queue += fileCount;
+      if (this.enableLogPanel && !this.logPanel)
+	this.createLogPanel();
+      return true;
+    } else return false;
   }
 
   ,onUploadStart:function(conn, file) {
@@ -383,7 +385,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       this.queue--;
       this.fireEvent("uploadcomplete", this, conn, file);
       if (this.queue === 0) {
-	this.logPanel.close();
+	if (this.logPanel.close) this.logPanel.close();
 	this.fireEvent("queuecomplete", this, conn);
       }
     }
