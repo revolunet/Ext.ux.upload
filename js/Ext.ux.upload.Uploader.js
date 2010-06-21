@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Fri Jun 11 02:50:32 2010 Gary van Woerkens
+** Last update Mon Jun 21 12:01:35 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -116,6 +116,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   url:""
   /**
+   * @cfg Boolean debug
+   * Enable debug (SWFupload)
+   */
+  ,debug:false
+  /**
    * @cfg String swfUrl
    * The URL form which to request swfupload object.
    */
@@ -181,7 +186,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       return dropZones.indexOf(xtype) > -1;
     };
     cmp.getUploader = getUploader.createDelegate(this);
-    cmp.relayEvents(this, ["fileupload", "beforeupload", "dragstart", "dragstop"]);
+    cmp.relayEvents(this, ["queuecomplete", "beforeupload", "dragstart", "dragstop"]);
     var xtype = cmp.getXType();
     if (isTrigger(xtype) !== false) {
       cmp.on({
@@ -242,6 +247,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     config = {
       el:el
       ,body:body
+      ,debug:this.debug
       ,listeners:{
 	scope:this
 	,load:this.resizeTrigger.createDelegate(cmp)
@@ -298,8 +304,9 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   ,getLogPanel:function() {
     return new Ext.ux.upload.LogPanel({
-//      hidden:true
-//      ,renderTo:Ext.getBody()
+      listeners:{scope:this, close:function() {
+	  this.queue = 0;
+      }}
     });
   }
 
@@ -373,19 +380,21 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 	,progress:1
 	,type:"success"
       });
+      this.queue--;
+      this.fireEvent("uploadcomplete", this, conn, file);
+      if (this.queue === 0) {
+	this.logPanel.close();
+	this.fireEvent("queuecomplete", this, conn);
+      }
     }
-    this.queue--;
-    this.fireEvent("uploadcomplete", this, conn, file);
-    if (this.queue === 0)
-      this.fireEvent("queuecomplete", this, conn);
   }
 
   ,onUploadError:function(conn, file, msg) {
+    this.queue--;
     if (this.enableLogPanel) {
       if (!this.logPanel) this.createLogPanel();
       this.logPanel.show();
       if (file) {
-//	this.logPanel.addProgress(file);
 	this.logPanel.updateProgress({
 	  file:file
 	  ,progress:0

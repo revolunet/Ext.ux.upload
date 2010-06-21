@@ -11,6 +11,10 @@
 				,
                 {"href":"output/Ext.ux.upload.Uploader.html","text":"Uploader","id":"Ext.ux.upload.Uploader","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				]}
+				,
+                {"href":"output/Ext.ux.Dialog.html","text":"Dialog","id":"Ext.ux.Dialog","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
+				,
+                {"href":"output/Ext.ux.StatusBar.html","text":"StatusBar","id":"Ext.ux.StatusBar","isClass":true,"iconCls":"icon-cls","cls":"cls","leaf":true}
 				]}
 				]}
 				]};
@@ -23,5 +27,9 @@
 			"Ext.ux.upload.SwfConnector":"icon-cls"
 			,
 			"Ext.ux.upload.Uploader":"icon-cls"
+			,
+			"Ext.ux.Dialog":"icon-cls"
+			,
+			"Ext.ux.StatusBar":"icon-cls"
 			};
     

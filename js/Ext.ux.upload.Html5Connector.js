@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:02:46 2010 Gary van Woerkens
-** Last update Wed Jun  9 01:59:43 2010 Gary van Woerkens
+** Last update Fri Jun 11 23:06:00 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -20,13 +20,17 @@ Ext.ns('Ext.ux.upload');
  */
 
 /**
- * Create a new SWFUpload connector
+ * Create a new Html5 connector
  * @constructor
  * @param {Object} config The config object
  */
 Ext.ux.upload.Html5Connector = function(config) {
 
   Ext.apply(this, config);
+
+  this.lang = this.langs[this.lang] || this.langs["en"];
+  this.lang.maxFilesError = new Ext.Template(this.lang.maxFilesError);
+  this.lang.maxFileSizeError = new Ext.Template(this.lang.maxFileSizeError);
 
   this.addEvents(
     /**
@@ -47,11 +51,10 @@ Ext.ux.upload.Html5Connector = function(config) {
      */
     ,"beforeupload"
     /**
-     * @event init Fires on files drop.
-     * TO DELETE ?
+     * @event start Fires on files drop.
      * @param {Ext.ux.upload.Html5Connector} this
      */
-    ,"init"
+    ,"start"
     /**
      * @event progress Fires when file upload progress
      * @param {Ext.ux.upload.Html5Connector} this
@@ -117,6 +120,29 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
    * True to enable highlight drop zone on window over.
    */
   ,enableGlobalHighlight:true
+  /**
+   * @cfg {String} lang
+   * The language to display log panel messages (default to "en").
+   */
+  ,lang:"en"
+  /**
+   * @cfg {Object} langs
+   * Available languages to load on init with {@link Ext.ux.upload.LogPanel#lang lang}.
+   */
+  ,langs:{
+    en:{
+      maxFilesError:"Max number of files reached (max:{maxFiles})"
+      ,maxFileSizeError:"Max file size reached (max:{maxFileSize} KB)"
+      ,allowedFileTypeError:"File type not allowed"
+      ,serverError:"Cannot reach server"
+    }
+    ,fr:{
+      maxFilesError:"Trop de fichiers envoyés simultanément (max:{maxFiles})"
+      ,maxFileSizeError:"Taille limite atteinte (max:{maxFileSize} KB)"
+      ,allowedFileTypeError:"Type de fichier incorrect"
+      ,serverError:"Serveur injoignable"
+    }
+  }
 
   /**
    * The {@link Ext.Element} which handles drag and drop events.
@@ -194,9 +220,10 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
    */
   ,uploadFiles:function(files) {
     var tooManyFiles = files.length > this.maxFiles;
-    if (tooManyFiles && this.maxFiles)
-      this.onUploadError(null, "trop de fichiers envoyés simultanément (max:"+this.maxFiles+")");
-    else Ext.each(files, this.uploadFile, this);
+    if (tooManyFiles && this.maxFiles) {
+      var msg = this.lang.maxFileSizeError.apply({maxFiles:this.maxFiles});
+      this.onUploadError(null, msg);
+    } else Ext.each(files, this.uploadFile, this);
   }
 
   /**
@@ -206,13 +233,15 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
    */
   ,uploadFile:function(file) {
     file.id = Ext.id();
+    this.fireEvent("start", this, file);
     if (!this.isAllowedFileType(file.name))
-      this.onUploadError(file, "type de fichier incorrect");
-    else if (!this.isAllowedFileSize(file.size))
-      this.onUploadError(file, "taille limite atteinte (max:"+this.maxFileSize+" KB)");
-    else {
+      this.onUploadError(file, this.lang.allowedFileTypeError);
+    else if (!this.isAllowedFileSize(file.size)) {
+      var msg = this.lang.maxFilesError.apply({maxFileSize:this.maxFileSize});
+      this.onUploadError(file, msg);
+    } else {
       var xhr = new XMLHttpRequest();
-      xhr.upload.addEventListener("loadstart", this.onUploadStart.createDelegate(this, [file], 0), false);
+//      xhr.upload.addEventListener("loadstart", this.onUploadStart.createDelegate(this, [file], 0), false);
       xhr.onreadystatechange = this.onUploadLoad.createDelegate(this, [file, xhr], 0);
       xhr.upload.addEventListener("error", this.onUploadError.createDelegate(this, [file], 0), false);
       xhr.upload.addEventListener("progress", this.onUploadProgress.createDelegate(this, [file], 0), false);
@@ -263,11 +292,12 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
   }
 
   // HANDLERS
-
+/*
   ,onUploadStart:function(file, e) {
+    console.log('html5 onUploadStart', this, arguments);
     this.fireEvent("start", this, file);
   }
-
+*/
   ,onUploadProgress:function(file, e) {
     this.fireEvent("progress", this, file, e.loaded/e.total);
   }
@@ -275,9 +305,9 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
   ,onUploadLoad:function(file, request, e) {
     if (request.readyState === 4) {
       if (request.status === 500)
-	this.fireEvent("error", this, file, "erreur serveur");
+	this.fireEvent("error", this, file, this.lang.serverError);
       else if (request.status === 404)
-	this.fireEvent("error", this, file, "serveur injoignable");
+	this.fireEvent("error", this, file, this.lang.serverError);
       else if (request.status === 200) {
 	this.fireEvent("complete", this, file, e.loaded/e.total);
       }

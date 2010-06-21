@@ -5,25 +5,34 @@
     <meta equiv="X-UA-Compatible" content="chrome=1">
     <title>Ext.ux.Uploader examples</title>
 
-    <link rel="stylesheet" type="text/css" href="http://lib.chewam.net/ext/resources/css/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="http://lib.chewam.com/ext/resources/css/ext-all.css" />
     <link rel="stylesheet" type="text/css" href="css/data-view.css" />
     <link rel="stylesheet" type="text/css" href="../css/Ext.ux.upload.css" />
     <style>
       body {padding:20px;}
       h1 {
-        font-size: large;
-        font-family: helvetica, tahoma, verdana, sans-serif;
+        font-size: 20px;
         margin-bottom: 20px;
       }
-       .examples-p, .examples-ul {
-        font-family: helvetica, tahoma, verdana, sans-serif;
+      h2 {
+        color:#333333;
+        font-size:16px;
+        font-weight:bold;
+      }
+      .examples-p, .examples-ul {
         font-size: 13px;
         margin-bottom: 15px;
       }
+      .examples-p a {
+        color:#15428B;
+      }
+      h1, h2, .examples-p, .examples-ul, .examples-p a {
+        font-family: helvetica, tahoma, verdana, sans-serif;
+      }
     </style>
 
-    <script type="text/javascript" src="http://lib.chewam.net/ext/adapter/ext/ext-base-debug.js"></script>
-    <script type="text/javascript" src="http://lib.chewam.net/ext/ext-all-debug.js"></script>
+    <script type="text/javascript" src="http://lib.chewam.com/ext/adapter/ext/ext-base-debug.js"></script>
+    <script type="text/javascript" src="http://lib.chewam.com/ext/ext-all-debug.js"></script>
 
     <script type="text/javascript" src="js/swfupload.js"></script>
     <script type="text/javascript" src="js/swfupload.queue.js"></script>
@@ -42,14 +51,14 @@
 
   <body>
 
-    <h1>Uploader examples</h1>
+    <h1>Ext.ux.upload examples</h1>
 
     <p class="examples-p">
-      <a href="../doc/" style="font:bold 13px helvetica, tahoma, verdana, sans-serif;color:#15428B;">Documentation</a>
+      <a href="../doc/">Documentation</a>
+      <a href="http://github.com/revolunet/Ext.ux.upload">sources</a>
     </p>
 
-    <div style="margin:20px;" id="border"></div>
-
+    <h2>Example 1 - Upload in DataView</h2>
     <ul class="examples-ul">
       <li>Uploader in Ext.Button with SWFUplaod</li>
       <li>Uploader in Ext.menu.Item with SWFUplaod</li>
@@ -62,13 +71,21 @@
       <li>Uploader in Ext.grid.GridPanel</li>
       <li>Log panel in Ext.Window</li>
     </ul>
+    <h2>Example 2 - Upload in GridPanel with Ext.ux.Dialog</h2>
     <div style="margin:20px;" id="gridpanel"></div>
 
     <ul class="examples-ul">
       <li>Uploader in Ext.Panel</li>
       <li>No log panel</li>
     </ul>
+    <h2>Example 3 - Upload in FormPanel without Ext.ux.LogPanel</h2>
     <div style="margin:20px;" id="form"></div>
+
+    <ul class="examples-ul">
+      <li>Log panel located in a specific component (east border layout region)</li>
+    </ul>
+    <h2>Example 4 - Upload in BorderLayout with Ext.ux.LogPanel inside east region</h2>
+    <div style="margin:20px;" id="border"></div>
 
   </body>
 

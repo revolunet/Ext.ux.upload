@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed Jun  9 01:47:49 2010 Gary van Woerkens
-** Last update Wed Jun  9 04:22:42 2010 Gary van Woerkens
+** Last update Tue Jun 15 17:17:25 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux');
@@ -44,7 +44,10 @@ Ext.ux.Dialog = Ext.extend(Ext.Panel, {
 
     Ext.ux.Dialog.superclass.initComponent.call(this);
 
-    this.on({scope:this, show:this.open});
+    this.on({
+      scope:this
+      ,show:this.open
+    });
 
   }
 

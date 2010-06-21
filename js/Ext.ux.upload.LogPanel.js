@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Fri Jun 11 02:48:36 2010 Gary van Woerkens
+** Last update Fri Jun 11 23:06:26 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -57,13 +57,13 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
       emptyListButtonTooltip:"Empty list"
       ,progressStatus:"Loading..."
       ,uploadComplete:"Upload complete"
-      ,uploadingStatus:'Uploading {count > 1 ? "files" : "file"}'
+      ,uploadingStatus:'Uploading {[count > 1 ? "files" : "file"]}'
     }
     ,fr:{
       emptyListButtonTooltip:"Vider la liste des téléchargements"
       ,progressStatus:"Chargement..."
       ,uploadComplete:"Envoi terminé "
-      ,uploadingStatus:'Envoi {count > 1 ? "des fichiers" : "du fichier"}'
+      ,uploadingStatus:'Envoi {[count > 1 ? "des fichiers" : "du fichier"]}'
     }
   }
 
@@ -80,7 +80,7 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
     this.lang = this.langs[this.lang] || this.langs["en"];
 
-    this.uploadingStatusTpl = new Ext.Template(this.lang.uploadingStatus);
+    this.uploadingStatus = new Ext.Template(this.lang.uploadingStatus);
 
     this.bbar = new Ext.ux.StatusBar({
       height:27
@@ -134,6 +134,8 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
       var p = new Ext.ProgressBar({
 	text:this.progressTpl.apply({type:"loading", text:file.name})
 	,isUploading:true
+	,style:"border-width:0 0 1px 0"
+//	,height:30
       });
       this.insert(0, p);
       this.doLayout();
@@ -158,7 +160,7 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
     }));
     if (config.type === "loading") {
       count = this.queue.length - this.getUploadingCount() + 1,
-      msg = this.uploadingStatusTpl.apply({count:this.queue.length});
+      msg = this.uploadingStatus.apply({count:this.queue.length});
     } else if (config.type === "success" || config.type === "error") {
       config.type = "info";
       p.isUploading = false;
