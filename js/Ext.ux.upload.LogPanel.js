@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Mon Jun 21 12:40:51 2010 Gary van Woerkens
+** Last update Mon Jun 21 13:48:39 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -20,6 +20,7 @@ Ext.ns('Ext.ux.upload');
 Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
   autoScroll:true
+  ,cls:"x-upload-logpanel-toolbar"
   /**
    * @cfg {Ext.Template} progressTpl
    * The {@link Ext.Template template} used to display file {@link Ext.ProgressBar progress} messages.
