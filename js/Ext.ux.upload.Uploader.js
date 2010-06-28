@@ -112,7 +112,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 //  dialogEl:null
   /**
    * @cfg String url
-   * The URL where files will be uploaded.
+   * The URL where files will be uploaded. Starts from www document root.
    */
   url:""
   /**
@@ -249,19 +249,21 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       ,body:body
       ,debug:this.debug
       ,listeners:{
-	scope:this
-	,load:this.resizeTrigger.createDelegate(cmp)
-	,beforeupload:this.onBeforeUpload
-	,start:this.onUploadStart
-	,progress:this.onUploadProgress
-	,complete:this.onUploadComplete
-	,error:this.onUploadError
+        scope:this
+        ,load:this.resizeTrigger.createDelegate(cmp)
+        ,beforeupload:this.onBeforeUpload
+        ,start:this.onUploadStart
+        ,progress:this.onUploadProgress
+        ,complete:this.onUploadComplete
+        ,error:this.onUploadError
       }
     };
     Ext.apply(config, this.swfParams);
     cmp.conn = new Ext.ux.upload.SwfConnector(config);
     this.connections.push(cmp.conn);
-    cmp.on("resize", this.resizeTrigger);
+    cmp.on({
+        resize:this.resizeTrigger
+    });
   }
 
   /**
@@ -270,13 +272,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   ,resizeTrigger:function() {
     if (this.rendered) {
-      var height = this.el.getHeight(),
-      width = this.el.getWidth();
-      el = this.conn.el;
-      el.setXY(this.el.getXY());
-      el.setSize(width, height);
-      if (this.conn.loaded)
-	this.conn.swf.setButtonDimensions(width, height);
+        var box = this.el.getBox();
+        this.conn.el.setBox(box);
+        if (this.conn.loaded) {
+	        this.conn.swf.setButtonDimensions(box.width, box.height);
+        }
     }
   }
 

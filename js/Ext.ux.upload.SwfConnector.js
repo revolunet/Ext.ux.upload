@@ -173,7 +173,7 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
    */
   ,getSwfUpload:function() {
     return new SWFUpload({
-      debug:this.debug
+      debug:true//this.debug
       ,post_params:{}
       ,upload_url:this.url
       ,flash_url:this.swfUrl
