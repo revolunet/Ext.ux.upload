@@ -93,6 +93,10 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
    * The URL where files will be uploaded.
    */
   url:""
+  /*
+   * @cfg path
+   */
+  ,path:""
   /**
    * @cfg Number maxFiles
    * Maximum number of files to upload in a row.
@@ -247,7 +251,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
       xhr.upload.addEventListener("progress", this.onUploadProgress.createDelegate(this, [file], 0), false);
       xhr.open("POST", this.url , true);
       xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-      xhr.setRequestHeader('X-File-Name', file.name);
+      xhr.setRequestHeader('X-File-Name', this.path+"/"+file.name);
       xhr.setRequestHeader('X-File-Size', file.size);
       xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       xhr.send(file);

@@ -157,6 +157,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    * True to display upload logs panel.
    */
   ,enableLogPanel:true
+  /**
+   *
+   * @cfg path
+   */
+   ,path:""
 
   /**
    * An array of opened connections.
@@ -212,6 +217,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     var el = cmp.getXType() == "grid" ? cmp.view.scroller : cmp.body;
     var config = {
       el:el
+        ,path:this.path
       ,listeners:{
 	scope:this
 	,beforeupload:this.onBeforeUpload
@@ -244,10 +250,12 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     , true);
     el = el.first();
     body = el.first();
+        console.log("set trigger", this.path);
     config = {
       el:el
       ,body:body
       ,debug:this.debug
+      ,path:this.path
       ,listeners:{
         scope:this
         ,load:this.resizeTrigger.createDelegate(cmp)

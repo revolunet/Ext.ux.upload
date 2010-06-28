@@ -91,6 +91,10 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
    * The URL where files will be uploaded.
    */
   url:""
+  /**
+   * @cfg path
+   */
+   ,path:""
    /**
    * @cfg Boolean debug
    * Enable debug (SWFupload)
@@ -214,6 +218,8 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
     ) {
       this.swf.refreshCookies(true);
       this.swf.startUpload();
+        console.log("PATH", this.path)
+      this.swf.setPostParams({path:this.path});
     }
   }
 
