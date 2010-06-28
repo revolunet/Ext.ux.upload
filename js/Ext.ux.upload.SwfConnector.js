@@ -216,10 +216,10 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
       queueFilesCount &&
       this.fireEvent("beforeupload", this, selectedFilesCount) !== false
     ) {
+      this.swf.setPostParams({path:this.path});
       this.swf.refreshCookies(true);
       this.swf.startUpload();
         console.log("PATH", this.path)
-      this.swf.setPostParams({path:this.path});
     }
   }
 
