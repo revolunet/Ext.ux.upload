@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:03:44 2010 Gary van Woerkens
-** Last update Fri Jun 11 22:54:50 2010 Gary van Woerkens
+** Last update Mon Jun 28 22:24:46 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -52,7 +52,7 @@ Ext.ux.upload.SwfConnector = function(config) {
      * @event start Fires when a file upload start
      * @param {Ext.ux.upload.SwfConnector} this
      * @param {Object} file
-     */ 
+     */
     ,"start"
     /**
      * @event progress Fires when file upload progress
@@ -177,7 +177,7 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
    */
   ,getSwfUpload:function() {
     return new SWFUpload({
-      debug:true//this.debug
+      debug:this.debug
       ,post_params:{}
       ,upload_url:this.url
       ,flash_url:this.swfUrl
