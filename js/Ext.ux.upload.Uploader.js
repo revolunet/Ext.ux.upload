@@ -250,7 +250,6 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     , true);
     el = el.first();
     body = el.first();
-        console.log("set trigger", this.path);
     config = {
       el:el
       ,body:body
@@ -350,6 +349,19 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     Ext.each(this.connections, function(conn) {
       conn.url = url;
       if (conn.swf) conn.swf.setUploadURL(url);
+    });
+  }
+
+  /**
+   * Set the url where files have to be uploaded
+   * @param {String} url
+   */
+  ,setPath:function(path) {
+    this.path = path;
+    this.swfParams.path = path;
+    this.html5Params.path = path;
+    Ext.each(this.connections, function(conn) {
+      conn.path = path;
     });
   }
 

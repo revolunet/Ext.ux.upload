@@ -219,7 +219,6 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
       this.swf.setPostParams({path:this.path});
       this.swf.refreshCookies(true);
       this.swf.startUpload();
-        console.log("PATH", this.path)
     }
   }
 
