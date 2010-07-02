@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Fri Jul  2 15:31:18 2010 Gary van Woerkens
+** Last update Fri Jul  2 15:51:49 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -239,10 +239,15 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    * @param {Ext.Component} cmp The component to bind the trigger to.
    */
   ,setTrigger:function(cmp) {
-    var pos = cmp.getEl().getXY();
-    var config, body,
-    btn = cmp.getEl().child("td.x-btn-mc") || cmp.getEl(),
-    el = btn.insertHtml("beforeEnd",
+    var config, body, pos, btn;
+    if (cmp.dom) {
+      pos = cmp.getXY();
+      btn = cmp;
+    } else {
+      pos = cmp.getEl().getXY();
+      btn = cmp.getEl().child("td.x-btn-mc") || cmp.getEl();
+    }
+    var el = btn.insertHtml("beforeEnd",
       '<div id="'+Ext.id()+'">'
       + '<div id="'+Ext.id()+'" style="z-index:200;position:absolute;cursor:pointer;top:'+pos[1]+';left:'+pos[0]+'">'
       + '<div id="'+Ext.id()+'"></div>'
@@ -280,11 +285,12 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   ,resizeTrigger:function() {
     if (this.rendered) {
-        var box = this.el.getBox();
-        this.conn.el.setBox(box);
-        if (this.conn.loaded) {
-	        this.conn.swf.setButtonDimensions(box.width, box.height);
-        }
+      var l = (this.dom) ? this : this.el;
+      var box = l.getBox();
+      this.conn.el.setBox(box);
+      if (this.conn.loaded) {
+	this.conn.swf.setButtonDimensions(box.width, box.height);
+      }
     }
   }
 
