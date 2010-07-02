@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:01:47 2010 Gary van Woerkens
-** Last update Fri Jun 11 23:06:26 2010 Gary van Woerkens
+** Last update Mon Jun 21 13:48:39 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -20,6 +20,7 @@ Ext.ns('Ext.ux.upload');
 Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
   autoScroll:true
+  ,cls:"x-upload-logpanel-toolbar"
   /**
    * @cfg {Ext.Template} progressTpl
    * The {@link Ext.Template template} used to display file {@link Ext.ProgressBar progress} messages.
@@ -41,13 +42,13 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
       emptyListButtonTooltip:"Empty list"
       ,progressStatus:"Loading..."
       ,uploadComplete:"Upload complete"
-      ,uploadingStatus:'Uploading {count > 1 ? "files" : "file"}'
+      ,uploadingStatus:'Uploading {[count > 1 ? "files" : "file"]}'
     }
     ,fr:{
       emptyListButtonTooltip:"vider la liste des téléchargements"
       ,progressStatus:"Chargement..."
       ,uploadComplete:"Envoi terminé "
-      ,uploadingStatus:'Envoi {count > 1 ? "des fichiers" : "du fichier"}'
+      ,uploadingStatus:'Envoi {[count > 1 ? "des fichiers" : "du fichier"]}'
     }
   }
    * </code></pre>
@@ -57,13 +58,13 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
       emptyListButtonTooltip:"Empty list"
       ,progressStatus:"Loading..."
       ,uploadComplete:"Upload complete"
-      ,uploadingStatus:'Uploading {[count > 1 ? "files" : "file"]}'
+      ,uploadingStatus:'Uploading {[values.count > 1 ? "files" : "file"]}'
     }
     ,fr:{
       emptyListButtonTooltip:"Vider la liste des téléchargements"
       ,progressStatus:"Chargement..."
       ,uploadComplete:"Envoi terminé "
-      ,uploadingStatus:'Envoi {[count > 1 ? "des fichiers" : "du fichier"]}'
+      ,uploadingStatus:'Envoi {[values.count > 1 ? "des fichiers" : "du fichier"]}'
     }
   }
 
@@ -80,7 +81,7 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
     this.lang = this.langs[this.lang] || this.langs["en"];
 
-    this.uploadingStatus = new Ext.Template(this.lang.uploadingStatus);
+    this.uploadingStatus = new Ext.XTemplate(this.lang.uploadingStatus);
 
     this.bbar = new Ext.ux.StatusBar({
       height:27

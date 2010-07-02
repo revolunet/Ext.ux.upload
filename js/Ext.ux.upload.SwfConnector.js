@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:03:44 2010 Gary van Woerkens
-** Last update Fri Jun 11 22:54:50 2010 Gary van Woerkens
+** Last update Mon Jun 28 22:24:46 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -52,7 +52,7 @@ Ext.ux.upload.SwfConnector = function(config) {
      * @event start Fires when a file upload start
      * @param {Ext.ux.upload.SwfConnector} this
      * @param {Object} file
-     */ 
+     */
     ,"start"
     /**
      * @event progress Fires when file upload progress
@@ -91,6 +91,10 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
    * The URL where files will be uploaded.
    */
   url:""
+  /**
+   * @cfg path
+   */
+   ,path:""
    /**
    * @cfg Boolean debug
    * Enable debug (SWFupload)
@@ -212,6 +216,7 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
       queueFilesCount &&
       this.fireEvent("beforeupload", this, selectedFilesCount) !== false
     ) {
+      this.swf.setPostParams({path:this.path});
       this.swf.refreshCookies(true);
       this.swf.startUpload();
     }

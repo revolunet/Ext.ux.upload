@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Fri Jul  2 15:22:41 2010 Gary van Woerkens
+** Last update Fri Jul  2 15:31:18 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -112,7 +112,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 //  dialogEl:null
   /**
    * @cfg String url
-   * The URL where files will be uploaded.
+   * The URL where files will be uploaded. Starts from www document root.
    */
   url:""
   /**
@@ -157,6 +157,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    * True to display upload logs panel.
    */
   ,enableLogPanel:true
+  /**
+   *
+   * @cfg path
+   */
+   ,path:""
 
   /**
    * An array of opened connections.
@@ -212,6 +217,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     var el = cmp.getXType() == "grid" ? cmp.view.scroller : cmp.body;
     var config = {
       el:el
+        ,path:this.path
       ,listeners:{
 	scope:this
 	,beforeupload:this.onBeforeUpload
@@ -223,7 +229,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     };
     Ext.apply(config, this.html5Params);
     cmp.conn = new Ext.ux.upload.Html5Connector(config);
-    this.relayEvents(cmp.conn, ["dragstart", "dragstop", "windragstart", "windragstop"]); 
+    this.relayEvents(cmp.conn, ["dragstart", "dragstop", "windragstart", "windragstop"]);
     this.connections.push(cmp.conn);
   }
 
@@ -249,20 +255,23 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       el:el
       ,body:body
       ,debug:this.debug
+      ,path:this.path
       ,listeners:{
-	scope:this
-	,load:this.resizeTrigger.createDelegate(cmp)
-	,beforeupload:this.onBeforeUpload
-	,start:this.onUploadStart
-	,progress:this.onUploadProgress
-	,complete:this.onUploadComplete
-	,error:this.onUploadError
+        scope:this
+        ,load:this.resizeTrigger.createDelegate(cmp)
+        ,beforeupload:this.onBeforeUpload
+        ,start:this.onUploadStart
+        ,progress:this.onUploadProgress
+        ,complete:this.onUploadComplete
+        ,error:this.onUploadError
       }
     };
     Ext.apply(config, this.swfParams);
     cmp.conn = new Ext.ux.upload.SwfConnector(config);
     this.connections.push(cmp.conn);
-    cmp.on("resize", this.resizeTrigger);
+    cmp.on({
+        resize:this.resizeTrigger
+    });
   }
 
   /**
@@ -271,13 +280,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   ,resizeTrigger:function() {
     if (this.rendered) {
-      var height = this.el.getHeight(),
-      width = this.el.getWidth();
-      el = this.conn.el;
-      el.setXY(this.el.getXY());
-      el.setSize(width, height);
-      if (this.conn.loaded)
-	this.conn.swf.setButtonDimensions(width, height);
+        var box = this.el.getBox();
+        this.conn.el.setBox(box);
+        if (this.conn.loaded) {
+	        this.conn.swf.setButtonDimensions(box.width, box.height);
+        }
     }
   }
 
@@ -346,13 +353,28 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     });
   }
 
+  /**
+   * Set the url where files have to be uploaded
+   * @param {String} url
+   */
+  ,setPath:function(path) {
+    this.path = path;
+    this.swfParams.path = path;
+    this.html5Params.path = path;
+    Ext.each(this.connections, function(conn) {
+      conn.path = path;
+    });
+  }
+
   // HANDLERS
 
   ,onBeforeUpload:function(conn, fileCount) {
-    this.queue += fileCount;
-    if (this.enableLogPanel && !this.logPanel)
-      this.createLogPanel();
-    this.fireEvent("beforeupload", this, conn, fileCount);
+    if (this.fireEvent("beforeupload", this, conn, fileCount) !== false) {
+       this.queue += fileCount;
+      if (this.enableLogPanel && !this.logPanel)
+	this.createLogPanel();
+      return true;
+    } else return false;
   }
 
   ,onUploadStart:function(conn, file) {
@@ -384,7 +406,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       this.queue--;
       this.fireEvent("uploadcomplete", this, conn, file);
       if (this.queue === 0) {
-	this.logPanel.close();
+	if (this.logPanel.close) this.logPanel.close();
 	this.fireEvent("queuecomplete", this, conn);
       }
     }

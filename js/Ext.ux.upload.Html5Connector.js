@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:02:46 2010 Gary van Woerkens
-** Last update Fri Jul  2 15:26:20 2010 Gary van Woerkens
+** Last update Fri Jul  2 15:30:52 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -103,6 +103,10 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
    * The URL where files will be uploaded.
    */
   url:""
+  /*
+   * @cfg path
+   */
+  ,path:""
   /**
    * @cfg Number maxFiles
    * Maximum number of files to upload in a row.
@@ -190,29 +194,28 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
 
   // private
   ,setWindowEvents:function() {
-      Ext.getBody().on({
-	scope:this
-	,dragover:function(e) {
-	  e.stopPropagation();
-	  e.preventDefault();
-	  if (!Ext.isGecko) { // prevents drop in FF ;-(
-	    e.browserEvent.dataTransfer.dropEffect = 'copy';
-	  }
-	  if (this.enableGlobalHighlight)
-	    this.el.addClass("x-uploader-dragover");
-	  this.fireEvent("windragstart", this);
-	  return;
+    Ext.getBody().on({
+      scope:this
+      ,dragover:function(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	if (!Ext.isGecko) { // prevents drop in FF ;-(
+	  e.browserEvent.dataTransfer.dropEffect = 'copy';
 	}
-	,dragleave:function(e) {
-	  e.stopPropagation();
-	  e.preventDefault();
-	  if (this.enableGlobalHighlight)
-	    this.el.removeClass("x-uploader-dragover");
-	  this.fireEvent("windragstop", this);
-	  return;
-	}
-      });
-    }
+	if (this.enableGlobalHighlight)
+	  this.el.addClass("x-uploader-dragover");
+	this.fireEvent("windragstart", this);
+	return;
+      }
+      ,dragleave:function(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	if (this.enableGlobalHighlight)
+	  this.el.removeClass("x-uploader-dragover");
+	this.fireEvent("windragstop", this);
+	return;
+      }
+    });
   }
 
   // private
@@ -262,7 +265,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
       xhr.upload.addEventListener("progress", this.onUploadProgress.createDelegate(this, [file], 0), false);
       xhr.open("POST", this.url , true);
       xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-      xhr.setRequestHeader('X-File-Name', file.name);
+      xhr.setRequestHeader('X-File-Name', this.path+file.name);
       xhr.setRequestHeader('X-File-Size', file.size);
       xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       xhr.send(file);
