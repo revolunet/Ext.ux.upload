@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Wed May 26 17:45:41 2010 Gary van Woerkens
-** Last update Tue Jun 15 15:45:39 2010 Gary van Woerkens
+** Last update Fri Jul  2 15:22:41 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -186,7 +186,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       return dropZones.indexOf(xtype) > -1;
     };
     cmp.getUploader = getUploader.createDelegate(this);
-    cmp.relayEvents(this, ["queuecomplete", "beforeupload", "dragstart", "dragstop"]);
+    cmp.relayEvents(this, ["queuecomplete", "beforeupload", "dragstart", "dragstop", "windragstart", "windragstop"]);
     var xtype = cmp.getXType();
     if (isTrigger(xtype) !== false) {
       cmp.on({
@@ -223,6 +223,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     };
     Ext.apply(config, this.html5Params);
     cmp.conn = new Ext.ux.upload.Html5Connector(config);
+    this.relayEvents(cmp.conn, ["dragstart", "dragstop", "windragstart", "windragstop"]); 
     this.connections.push(cmp.conn);
   }
 
@@ -233,11 +234,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   ,setTrigger:function(cmp) {
     var pos = cmp.getEl().getXY();
-    var config, body, 
+    var config, body,
     btn = cmp.getEl().child("td.x-btn-mc") || cmp.getEl(),
     el = btn.insertHtml("beforeEnd",
       '<div id="'+Ext.id()+'">'
-      + '<div id="'+Ext.id()+'" style="position:absolute;cursor:pointer;top:'+pos[1]+';left:'+pos[0]+'">'
+      + '<div id="'+Ext.id()+'" style="z-index:200;position:absolute;cursor:pointer;top:'+pos[1]+';left:'+pos[0]+'">'
       + '<div id="'+Ext.id()+'"></div>'
       + '</div>'
       + '</div>'

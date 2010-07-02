@@ -5,7 +5,7 @@
 ** Contact <gary@chewam.com>
 **
 ** Started on  Fri Jun  4 19:02:46 2010 Gary van Woerkens
-** Last update Fri Jun 11 23:06:00 2010 Gary van Woerkens
+** Last update Fri Jul  2 15:26:20 2010 Gary van Woerkens
 */
 
 Ext.ns('Ext.ux.upload');
@@ -34,15 +34,25 @@ Ext.ux.upload.Html5Connector = function(config) {
 
   this.addEvents(
     /**
-     * @event dragstart Fires when a file is draged over the window's body.
+     * @event dragstart Fires when a file is draged over the component's body.
      * @param {Ext.ux.upload.Html5Connector} this
      */
     "dragstart"
     /**
-     * @event drastop Fires when a file is draged out the window's body.
+     * @event drastop Fires when a file is draged out the component's body.
      * @param {Ext.ux.upload.Html5Connector} this
      */
     ,"dragstop"
+    /**
+     * @event dragstart Fires when a file is draged over the window's body.
+     * @param {Ext.ux.upload.Html5Connector} this
+     */
+    ,"windragstart"
+    /**
+     * @event drastop Fires when a file is draged out the window's body.
+     * @param {Ext.ux.upload.Html5Connector} this
+     */
+    ,"windragstop"
     /**
      * @event beforeupload Fires on files drop,
      * after check of {Ext.ux.upload.Html5Connector#maxFiles maxFiles}.
@@ -152,7 +162,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
 
   // private
   ,init:function() {
-    this.setGlobalHighlight();
+    this.setWindowEvents();
     this.el.on({
       scope:this
       ,dragover:function(e) {
@@ -163,6 +173,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
 	}
 	if (this.enableHighlight)
 	  this.el.addClass("x-uploader-dragover");
+	this.fireEvent("dragstart", this);
 	return;
       }
       ,dragleave:function(e) {
@@ -170,6 +181,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
 	e.preventDefault();
 	if (this.enableHighlight)
 	  this.el.removeClass("x-uploader-dragover");
+	this.fireEvent("dragstop", this);
 	return;
       }
       ,drop:this.onFilesDrop
@@ -177,8 +189,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
   }
 
   // private
-  ,setGlobalHighlight:function() {
-    if (this.enableGlobalHighlight) {
+  ,setWindowEvents:function() {
       Ext.getBody().on({
 	scope:this
 	,dragover:function(e) {
@@ -187,13 +198,17 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
 	  if (!Ext.isGecko) { // prevents drop in FF ;-(
 	    e.browserEvent.dataTransfer.dropEffect = 'copy';
 	  }
-	  this.el.addClass("x-uploader-dragover");
+	  if (this.enableGlobalHighlight)
+	    this.el.addClass("x-uploader-dragover");
+	  this.fireEvent("windragstart", this);
 	  return;
 	}
 	,dragleave:function(e) {
 	  e.stopPropagation();
 	  e.preventDefault();
-	  this.el.removeClass("x-uploader-dragover");
+	  if (this.enableGlobalHighlight)
+	    this.el.removeClass("x-uploader-dragover");
+	  this.fireEvent("windragstop", this);
 	  return;
 	}
       });
