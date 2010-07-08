@@ -306,7 +306,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
       t.push(type.split(".")[1]);
     });
     var reg = "^.*\.("+t.join("|")+")$";
-    return new RegExp(reg, "g");
+    return new RegExp(reg, "gi");
   }
 
   // HANDLERS
