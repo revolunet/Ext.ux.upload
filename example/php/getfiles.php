@@ -4,7 +4,7 @@ $xaction = $_REQUEST['xaction'];
 
 if ($xaction == 'removeall') {
   $success = 'false';
-  $path = '../uploads/'.$_REQUEST['folder'];
+  $path = '/Users/goldledoigt/uploads/'.$_REQUEST['folder'];
   $d = dir($path); 
   while($entry = $d->read()) { 
     if ($entry!= "." && $entry!= "..") {
@@ -18,7 +18,7 @@ if ($xaction == 'removeall') {
 if ($xaction == 'read') {
   $index = 0;
   $files['data'] = array();
-  $hd = opendir('../uploads/'.$_REQUEST['folder']);
+  $hd = opendir('/Users/goldledoigt/uploads/'.$_REQUEST['folder']);
   while ($file = readdir($hd)) {
     if ($file != '.' and $file != '..') {
       $files['data'][$index]['name'] = $file;

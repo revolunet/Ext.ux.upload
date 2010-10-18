@@ -318,7 +318,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
    */
   ,getLogPanel:function() {
     return new Ext.ux.upload.LogPanel({
-      listeners:{scope:this, close:function() {
+      listeners:{scope:this, hide:function() {
 	  this.queue = 0;
       }}
     });
@@ -335,13 +335,15 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 	,dialogEl:this.dialogEl
       }).render(Ext.getBody());
     } else {
-      return new Ext.Window({
+      var win = new Ext.Window({
 	height:200
 	,width:350
 	,layout:"fit"
 	,border:false
 	,closeAction:"hide"
       });
+      win.close = win.hide;
+      return win;
     }
   }
 
@@ -376,6 +378,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 
   ,onBeforeUpload:function(conn, fileCount) {
     if (this.fireEvent("beforeupload", this, conn, fileCount) !== false) {
+        this.errors = 0;
        this.queue += fileCount;
       if (this.enableLogPanel && !this.logPanel)
 	this.createLogPanel();
@@ -412,7 +415,9 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       this.queue--;
       this.fireEvent("uploadcomplete", this, conn, file);
       if (this.queue === 0) {
-	if (this.logPanel.close) this.logPanel.close();
+	if (this.logPanel.close && !this.errors) {
+        this.logPanel.close.defer(1000, this.logPanel);
+	}
 	this.fireEvent("queuecomplete", this, conn);
       }
     }
@@ -420,6 +425,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
 
   ,onUploadError:function(conn, file, msg) {
     this.queue--;
+    this.errors++;
     if (this.enableLogPanel) {
       if (!this.logPanel) this.createLogPanel();
       this.logPanel.show();

@@ -252,9 +252,9 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
   ,uploadFile:function(file) {
     file.id = Ext.id();
     this.fireEvent("start", this, file);
-    if (!this.isAllowedFileType(file.name))
+    if (!this.isAllowedFileType(file.name)) {
       this.onUploadError(file, this.lang.allowedFileTypeError);
-    else if (!this.isAllowedFileSize(file.size)) {
+    } else if (!this.isAllowedFileSize(file.size)) {
       var msg = this.lang.maxFilesError.apply({maxFileSize:this.maxFileSize});
       this.onUploadError(file, msg);
     } else {
@@ -310,12 +310,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
   }
 
   // HANDLERS
-/*
-  ,onUploadStart:function(file, e) {
-    console.log('html5 onUploadStart', this, arguments);
-    this.fireEvent("start", this, file);
-  }
-*/
+
   ,onUploadProgress:function(file, e) {
     this.fireEvent("progress", this, file, e.loaded/e.total);
   }

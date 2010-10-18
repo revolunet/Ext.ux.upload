@@ -1,7 +1,7 @@
 <?php
 header('Content-Type:text/plain');
 $success = 'false';
-$path = '../uploads/dataview';
+$path = '/Users/goldledoigt/uploads/dataview';
 
 if (!strlen($_SERVER['HTTP_X_FILE_NAME'])) {
   foreach($_FILES as $file) {

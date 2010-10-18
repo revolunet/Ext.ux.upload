@@ -17,14 +17,14 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader = new Ext.ux.upload.Uploader({
-    url:"/dev/upload/examples/php/upload.phpx"
+    url:"/project/chewam/projects/Ext.ux.upload/example/php/upload.php" // Complete path is needed to make SWFUpload works
     ,swfUrl:"swf/swfupload.swf"
     ,allowedFileTypes:"*.*"
     ,maxFileSize:0
     ,maxFiles:10
     ,listeners:{
       beforeupload:function() {
-	// Return false to cancel upload.
+	      // Return false to cancel upload.
       }
     }
   });
@@ -98,7 +98,7 @@ Ext.onReady(function() {
     }],
     listeners: {
       queuecomplete:function(uploader, target, file) {
-	this.items.items[0].getStore().load({params:{xaction:"read"}});
+	      this.items.items[0].getStore().load({params:{xaction:"read"}});
       }
     },
     items: new Ext.DataView({
@@ -109,7 +109,7 @@ Ext.onReady(function() {
       overClass:'x-view-over',
       itemSelector:'div.thumb-wrap',
       emptyText: 'No item to display',
-      prepareData: function(data){
+      prepareData: function(data) {
         data.shortName = Ext.util.Format.ellipsis(data.name, 15);
         data.sizeString = Ext.util.Format.fileSize(data.size);
         data.dateString = data.lastmod.format("m/d/Y g:i a");
@@ -125,9 +125,9 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader2 = new Ext.ux.upload.Uploader({
-    url:"/dev/upload/examples/php/upload2.php"
+    url:"/project/chewam/projects/Ext.ux.upload/example/php/upload2.php"
     ,swfUrl:"swf/swfupload.swf"
-    ,allowedFileTypes:"*.png;*.jpg;*.gif"
+    ,allowedFileTypes:"*.png;*.jpg;*.gif;*.jpeg"
     ,maxFileSize:1024
     ,maxFiles:3
   });
@@ -163,7 +163,7 @@ Ext.onReady(function() {
 	,{dataIndex:"lastmod", header:"Last modification"}
       ]
       ,listeners: {
-	uploadcomplete:function(uploader, target, file) {
+	queuecomplete:function(uploader, target, file) {
 	  this.getStore().load({params:{xaction:"read"}});
 	}
       }
@@ -193,11 +193,11 @@ Ext.onReady(function() {
   });
 
   /*******************************************************************
-   * FORM ************************************************************
+   * FORMPANEL *******************************************************
    * *****************************************************************/
 
   var uploader3 = new Ext.ux.upload.Uploader({
-    url:"/dev/upload/examples/php/upload3.php"
+    url:"/project/chewam/projects/Ext.ux.upload/example/php/upload3.php"
     ,id:"uploader3"
     ,swfUrl:"swf/swfupload.swf"
     ,disableLogPanel:true
@@ -255,10 +255,10 @@ Ext.onReady(function() {
 	   ,flex:1
 	 }, {
 	   xtype:"button"
-	   ,text:"image"
+	   ,text:"Avatar"
 	   ,plugins:[uploader3]
 	   ,listeners:{
-	     uploadcomplete:function() {
+	     queuecomplete:function() {
 	       store3.load({params:{xaction:"read"}});
 	     }
 	   }
@@ -291,7 +291,7 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader4 = new Ext.ux.upload.Uploader({
-    url:"/dev/upload/examples/php/upload4.php"
+    url:"/project/chewam/projects/Ext.ux.upload/example/php/upload4.php"
     ,swfUrl:"swf/swfupload.swf"
     ,allowedFileTypes:"*.*"
     ,maxFileSize:0
@@ -405,7 +405,7 @@ Ext.onReady(function() {
       ,handler:function() {this.load({params:{xaction:"read"}});}
     }],
     listeners: {
-      uploadcomplete:function(uploader, target, file) {
+      queuecomplete:function(uploader, target, file) {
 	store4.load({params:{xaction:"read"}});
       }
     },

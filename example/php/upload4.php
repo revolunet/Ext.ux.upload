@@ -1,7 +1,7 @@
 <?php
 header('Content-Type:text/plain');
 $success = 'false';
-$path = '../uploads/border';
+$path = '/Users/goldledoigt/uploads/border';
 
 if (!strlen($_SERVER['HTTP_X_FILE_NAME'])) {
   foreach($_FILES as $file) {

@@ -1,6 +1,6 @@
 <?php
 $success = 'false';
-$path = '../uploads/form';
+$path = '/Users/goldledoigt/uploads/form';
 
 $d = dir($path); 
 while($entry = $d->read()) { 
@@ -14,7 +14,7 @@ if (!strlen($_SERVER['HTTP_X_FILE_NAME'])) {
     $path .= "/" . basename($file['name']);
     $ext = explode(".", $path);
     if (!$ext[1]) $ext[1] = "jpg";
-    $path = "uploads3/image.".$ext[1];
+    $path .= "/image.".$ext[1];
     if (move_uploaded_file($file['tmp_name'], $path))
       $success = 'true';
   }
@@ -24,9 +24,9 @@ if (!strlen($_SERVER['HTTP_X_FILE_NAME'])) {
   $filename = $path."/".$_SERVER['HTTP_X_FILE_NAME'];
   $ext = explode(".", $filename);
   if (!$ext[1]) $ext[1] = "jpg";
-  $filename = "uploads3/image.".$ext[1];
-  rename($temp_file, $filename);
-  chmod($filename, 0644);
+  $path .= "/image.".$ext[1];
+  rename($temp_file, $path);
+  chmod($path, 0644);
   $success = 'true';
 }
 

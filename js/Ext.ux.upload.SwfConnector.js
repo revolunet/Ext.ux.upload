@@ -226,10 +226,8 @@ Ext.extend(Ext.ux.upload.SwfConnector, Ext.util.Observable, {
     var msg = "";
     if (errorCode == -100)
       msg = this.lang.maxFileSizeError.apply({maxFiles:this.maxFiles});
-//      msg = "trop de fichiers envoyés simultanément (max:"+this.maxFiles+")";
     else if (errorCode == -110)
       msg = this.lang.maxFilesError.apply({maxFileSize:this.maxFileSize});
-//      msg = "taille limite atteinte (max:"+this.maxFileSize+" KB)";
     else if (errorCode == -130)
       msg = this.lang.allowedFileTypeError;
     this.fireEvent("error", this, file, msg);
