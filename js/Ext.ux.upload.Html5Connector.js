@@ -259,7 +259,6 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
       this.onUploadError(file, msg);
     } else {
       var xhr = new XMLHttpRequest();
-//      xhr.upload.addEventListener("loadstart", this.onUploadStart.createDelegate(this, [file], 0), false);
       xhr.onreadystatechange = this.onUploadLoad.createDelegate(this, [file, xhr], 0);
       xhr.upload.addEventListener("error", this.onUploadError.createDelegate(this, [file], 0), false);
       xhr.upload.addEventListener("progress", this.onUploadProgress.createDelegate(this, [file], 0), false);

@@ -344,3 +344,7 @@ h3.home-title {
 	margin-left:10px;
 }
 
+.brick-icon {
+    background-image: url(brick.png) !important;
+}
+
