@@ -133,6 +133,11 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
    * @cfg Boolean enableGlobalHighlight
    * True to enable highlight drop zone on window over.
    */
+  ,loaded:true
+  /**
+   * @cfg Boolean loaded
+   * is generally immediately loaded
+   */
   ,enableGlobalHighlight:true
   /**
    * @cfg {String} lang

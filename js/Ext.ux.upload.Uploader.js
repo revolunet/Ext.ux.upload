@@ -196,7 +196,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     if (isTrigger(xtype) !== false) {
       cmp.on({
 	scope:this
-	,afterrender:this.setTrigger
+        ,afterrender:this.setTrigger
       });
     } else if (isDropZone(xtype) !== false) {
       cmp.on({
@@ -272,11 +272,18 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       }
     };
     Ext.apply(config, this.swfParams);
-    cmp.conn = new Ext.ux.upload.SwfConnector(config);
-    this.connections.push(cmp.conn);
-    cmp.on({
-        resize:this.resizeTrigger
-    });
+  //  console.log(swfobject.hasFlashPlayerVersion("9.0.0"))
+   // if (swfobject.hasFlashPlayerVersion("9.0.0")) {
+        cmp.conn = new Ext.ux.upload.SwfConnector(config);
+        this.connections.push(cmp.conn);
+        cmp.on({
+            resize:this.resizeTrigger
+        });
+   // }
+    //else {
+  //      cmp.conn = null;
+   // }
+    
   }
 
   /**
@@ -287,9 +294,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     if (this.rendered) {
       var l = (this.dom) ? this : this.el;
       var box = l.getBox();
-      this.conn.el.setBox(box);
-      if (this.conn.loaded) {
-	this.conn.swf.setButtonDimensions(box.width, box.height);
+      if (this.conn) {
+          this.conn.el.setBox(box);
+          if (this.conn.loaded) {
+                this.conn.swf.setButtonDimensions(box.width, box.height);
+          }
       }
     }
   }
@@ -356,8 +365,11 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     this.swfParams.url = url;
     this.html5Params.url = url;
     Ext.each(this.connections, function(conn) {
-      conn.url = url;
-      if (conn.swf) conn.swf.setUploadURL(url);
+        if (conn && conn.loaded ) {
+            console.log(conn);
+            conn.url = url;
+            if (conn.swf) conn.swf.setUploadURL(url);
+            }
     });
   }
 
@@ -370,13 +382,16 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     this.swfParams.path = path;
     this.html5Params.path = path;
     Ext.each(this.connections, function(conn) {
-      conn.path = path;
+        if (conn && conn.loaded) {
+                conn.path = path;
+                }
     });
   }
 
   // HANDLERS
 
   ,onBeforeUpload:function(conn, fileCount) {
+    if (!conn) return;
     if (this.fireEvent("beforeupload", this, conn, fileCount) !== false) {
         this.errors = 0;
        this.queue += fileCount;
@@ -387,6 +402,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
   }
 
   ,onUploadStart:function(conn, file) {
+    if (!conn) return;
     if (this.enableLogPanel) {
       this.logPanel.show();
       this.logPanel.addProgress(file);
