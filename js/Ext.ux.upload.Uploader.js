@@ -366,7 +366,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     this.html5Params.url = url;
     Ext.each(this.connections, function(conn) {
         if (conn && conn.loaded ) {
-            console.log(conn);
+            //console.log(conn);
             conn.url = url;
             if (conn.swf) conn.swf.setUploadURL(url);
             }
