@@ -86,7 +86,12 @@ Ext.ux.upload.Html5Connector = function(config) {
      * @param {Object} file
      */
     ,"complete"
-
+    /**
+     * @event medialinkdrop Fires on media link drop.
+     * @param {Ext.ux.upload.Html5Connector} this
+     * @param {String} mediaLink
+     */
+    ,"medialinkdrop"
 
   );
 
@@ -227,13 +232,20 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
   ,onFilesDrop:function(e) {
     e.stopPropagation();
     e.preventDefault();
+    var mediaLink = e.browserEvent.dataTransfer.getData('Text');
     var files = e.browserEvent.dataTransfer.files;
-    if (
+    if (!Ext.isEmpty(mediaLink)) {
+      this.uploadMediaLink(mediaLink);
+    } else if (
       files && files.length &&
       this.fireEvent("beforeupload", this, files.length) !== false
     ) {
       this.uploadFiles(files);
     }
+  }
+
+  ,uploadMediaLink: function (mediaLink) {
+     this.fireEvent('medialinkdrop', this, mediaLink);
   }
 
   /**

@@ -191,7 +191,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
       return dropZones.indexOf(xtype) > -1;
     };
     cmp.getUploader = getUploader.createDelegate(this);
-    cmp.relayEvents(this, ["queuecomplete", "beforeupload", "dragstart", "dragstop", "windragstart", "windragstop"]);
+    cmp.relayEvents(this, ["queuecomplete", "beforeupload", "dragstart", "dragstop", "windragstart", "windragstop", "medialinkdrop"]);
     var xtype = cmp.getXType();
     if (isTrigger(xtype) !== false) {
       cmp.on({
@@ -229,7 +229,7 @@ Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
     };
     Ext.apply(config, this.html5Params);
     cmp.conn = new Ext.ux.upload.Html5Connector(config);
-    this.relayEvents(cmp.conn, ["dragstart", "dragstop", "windragstart", "windragstop"]);
+    this.relayEvents(cmp.conn, ["dragstart", "dragstop", "windragstart", "windragstop", "medialinkdrop"]);
     this.connections.push(cmp.conn);
   }
 
