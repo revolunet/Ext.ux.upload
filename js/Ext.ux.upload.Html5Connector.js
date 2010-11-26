@@ -240,7 +240,7 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
       files && files.length &&
       this.fireEvent("beforeupload", this, files.length) !== false
     ) {
-      this.uploadFiles(files);
+      this.uploadFiles(files, e.target);
     }
   }
 
@@ -253,7 +253,8 @@ Ext.extend(Ext.ux.upload.Html5Connector, Ext.util.Observable, {
    * and loop on each file to upload.
    * @param {Array} files Array of file objects.
    */
-  ,uploadFiles:function(files) {
+  ,uploadFiles:function(files, targetElement) {
+	this.targetElement = targetElement;
     var tooManyFiles = files.length > this.maxFiles;
     if (tooManyFiles && this.maxFiles) {
       var msg = this.lang.maxFileSizeError.apply({maxFiles:this.maxFiles});
