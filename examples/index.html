@@ -1,0 +1,99 @@
+<html>
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta equiv="X-UA-Compatible" content="chrome=1">
+    <title>Ext.ux.Uploader examples</title>
+
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-3.3.1/resources/css/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="./css/data-view.css" />
+    <link rel="stylesheet" type="text/css" href="http://demo.revolunet.com/gary/demo/Ext.ux.upload/resources/css/Ext.ux.upload.css" />
+    <style>
+      body {padding:20px;}
+      h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      h2 {
+        color:#333333;
+        font-size:16px;
+        font-weight:bold;
+      }
+      .examples-p, .examples-ul {
+        font-size: 13px;
+        margin-bottom: 15px;
+      }
+      .examples-p a {
+        color:#15428B;
+      }
+      h1, h2, .examples-p, .examples-ul, .examples-p a {
+        font-family: helvetica, tahoma, verdana, sans-serif;
+      }
+    </style>
+
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-3.3.1/adapter/ext/ext-base-debug.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-3.3.1/ext-all-debug.js"></script>
+
+    <script type="text/javascript" src="js/swfupload.js"></script>
+    <script type="text/javascript" src="js/swfupload.queue.js"></script>
+    <script type="text/javascript" src="js/swfupload.cookies.js"></script>
+
+    <script type="text/javascript" src="http://demo.revolunet.com/gary/demo/Ext.ux.upload/src/Ext.ux.StatusBar.js"></script>
+    <script type="text/javascript" src="http://demo.revolunet.com/gary/demo/Ext.ux.upload/src/Ext.ux.Dialog.js"></script>
+    <script type="text/javascript" src="http://demo.revolunet.com/gary/demo/Ext.ux.upload/src/Ext.ux.upload.LogPanel.js"></script>
+    <script type="text/javascript" src="http://demo.revolunet.com/gary/demo/Ext.ux.upload/src/Ext.ux.upload.SwfConnector.js"></script>
+    <script type="text/javascript" src="http://demo.revolunet.com/gary/demo/Ext.ux.upload/src/Ext.ux.upload.Html5Connector.js"></script>
+    <script type="text/javascript" src="http://demo.revolunet.com/gary/demo/Ext.ux.upload/src/Ext.ux.upload.Uploader.js"></script>
+
+    <script type="text/javascript" src="js/examples.js"></script>
+
+  </head>
+
+  <body> 
+
+    <h1>Ext.ux.upload examples</h1>
+    
+    Ext.ux.upload is a plugin that brings upload fonctionnalities to you Ext Elements.<br/>
+    Attached to a button, it makes the button become a SWFupload button<br/>
+    Attached to a container, it makes the container become an html5 dropabble zone (for firefox and chrome)<br/>
+    
+    <br/>
+    <li>* HTML5 drag'n'drop from your desktop</li>
+    <li>* Multiple concurrent upload with progressbars</li>
+    <li>* Backend independance (see PHP and Django)</li>
+    <br/><br/>
+
+    <p class="examples-p">
+      <a href="../doc/index.html">Documentation</a>
+      <a href="http://github.com/revolunet/Ext.ux.upload">sources</a>
+    </p>
+
+	<!-- EXAMPLE 1 -->
+
+    <h2>Example 1 - Upload in DataView</h2>
+    <div style="margin:20px;" id="dataview"></div>
+	<br />
+	<br />
+
+	<!-- EXAMPLE 2 -->
+
+    <h2>Example 2 - Upload in GridPanel with Ext.ux.Dialog</h2>
+    <div style="margin:20px;" id="gridpanel"></div>
+	<br />
+	<br />
+
+	<!-- EXAMPLE 3 -->
+
+    <h2>Example 3 - Upload in FormPanel without Ext.ux.LogPanel</h2>
+    <div style="margin:20px;" id="form"></div>
+	<br />
+	<br />
+
+	<!-- EXAMPLE 4 -->
+
+    <h2>Example 4 - Upload in BorderLayout with Ext.ux.LogPanel inside east region</h2>
+    <div style="margin:20px;" id="border"></div>
+
+  </body>
+
+</html>

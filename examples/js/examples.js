@@ -17,8 +17,8 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader = new Ext.ux.upload.Uploader({
-    url:"/project/chewam/projects/Ext.ux.upload/example/php/upload.php" // Complete path is needed to make SWFUpload works
-    ,swfUrl:"swf/swfupload.swf"
+    url:"http://office.revolunet.com/juju/php-backend/upload.php" // Complete path is needed to make SWFUpload works
+    ,swfUrl:"/swf/swfupload.swf"
     ,allowedFileTypes:"*.*"
     ,maxFileSize:0
     ,maxFiles:10
