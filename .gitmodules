@@ -1,0 +1,3 @@
+[submodule "examples/php-backend"]
+	path = examples/php-backend
+	url = git@github.com:revolunet/filebrowser-php-backend.git
