@@ -17,7 +17,7 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader = new Ext.ux.upload.Uploader({
-    url:"http://office.revolunet.com/juju/php-backend/upload.php" // Complete path is needed to make SWFUpload works
+    url:"/php-backend/upload.php?path=dataview" // Complete path is needed to make SWFUpload works
     ,swfUrl:"/swf/swfupload.swf"
     ,allowedFileTypes:"*.*"
     ,maxFileSize:0
@@ -55,20 +55,20 @@ Ext.onReady(function() {
   });
 
   var store = new Ext.data.JsonStore({
-    url:"php/getfiles.php",
-    root:"data",
+    url:"/php-backend/api.php",
+    //root:"data",
     autoLoad:true,
     baseParams:{
-      folder:"dataview"
-      ,xaction:"read"
+      path:"dataview"
+      ,cmd:"get"
     },
-    fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    fields: ['text', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
   });
 
   var tpl = new Ext.XTemplate(
     '<tpl for=".">',
-    '<div class="thumb-wrap" id="{name}">',
-    '<div class="thumb"><img src="http://cdn.iconfinder.net/data/icons/Basic_set2_Png/64/document.png" title="{name}"></div>',
+    '<div class="thumb-wrap" id="{text}">',
+    '<div class="thumb"><img src="http://cdn.iconfinder.net/data/icons/Basic_set2_Png/64/document.png" title="{text}"></div>',
     '<span class="x-editable">{shortName}</span></div>',
     '</tpl>',
     '<div class="x-clear"></div>'
@@ -85,20 +85,22 @@ Ext.onReady(function() {
     plugins:[uploader],
     collapseFirst:false,
     bodyStyle:"border:1px solid #99BBE8;",
-    tools:[{
-      id:"gear"
-      ,scope:store
-      ,qtip:"remove all files"
-      ,handler:function() {this.load({params:{xaction:"removeall"}});}
-    }, {
+    tools:[
+    // {
+      // id:"gear"
+      // ,scope:store
+      // ,qtip:"remove all files"
+      // ,handler:function() {this.load({params:{cmd:"removeall"}});}
+//    },
+    {
       id:"refresh"
       ,scope:store
       ,qtip:"refresh"
-      ,handler:function() {this.load({params:{xaction:"read"}});}
+      ,handler:function() {this.load({params:{cmd:"get"}});}
     }],
     listeners: {
       queuecomplete:function(uploader, target, file) {
-	      this.items.items[0].getStore().load({params:{xaction:"read"}});
+	      this.items.items[0].getStore().load({params:{cmd:"get"}});
       }
     },
     items: new Ext.DataView({
@@ -110,7 +112,7 @@ Ext.onReady(function() {
       itemSelector:'div.thumb-wrap',
       emptyText: 'No item to display',
       prepareData: function(data) {
-        data.shortName = Ext.util.Format.ellipsis(data.name, 15);
+        data.shortName = Ext.util.Format.ellipsis(data.text, 15);
         data.sizeString = Ext.util.Format.fileSize(data.size);
         data.dateString = data.lastmod.format("m/d/Y g:i a");
         return data;
@@ -125,22 +127,22 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader2 = new Ext.ux.upload.Uploader({
-    url:"/project/chewam/projects/Ext.ux.upload/example/php/upload2.php"
-    ,swfUrl:"swf/swfupload.swf"
+    url:"/php-backend/upload.php?path=grid"
+    ,swfUrl:"/swf/swfupload.swf"
     ,allowedFileTypes:"*.png;*.jpg;*.gif;*.jpeg"
     ,maxFileSize:1024
     ,maxFiles:3
   });
 
   var store2 = new Ext.data.JsonStore({
-    url:"php/getfiles.php",
-    root:"data",
+    url:"/php-backend/api.php",
+    //root:"data",
     autoLoad:true,
     baseParams:{
-      folder:"grid"
-      ,xaction:"read"
+      path:"grid"
+      ,cmd:"get"
     },
-    fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    fields: ['text', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
   });
 
   var panel2 = new Ext.Panel({
@@ -155,30 +157,32 @@ Ext.onReady(function() {
       xtype:"grid"
       ,store:store2
       ,plugins:[uploader2]
-      ,autoExpandColumn:"name"
+      ,autoExpandColumn:"text"
       ,bodyStyle:"border:1px solid #99BBE8;"
       ,uploadLogPanelTarget:true
       ,columns:[
-	{dataIndex:"name", header:"File name", id:"name"}
+	{dataIndex:"text", header:"File name", id:"text"}
 	,{dataIndex:"lastmod", header:"Last modification"}
       ]
       ,listeners: {
 	queuecomplete:function(uploader, target, file) {
-	  this.getStore().load({params:{xaction:"read"}});
+	  this.getStore().load({params:{cmd:"get"}});
 	}
       }
     }]
     ,collapseFirst:false
-    ,tools:[{
-      id:"gear"
-      ,scope:store2
-      ,qtip:"remove all files"
-      ,handler:function() {this.load({params:{xaction:"removeall"}});}
-    } ,{
+    ,tools:[
+    // {
+      // id:"gear"
+      // ,scope:store2
+      // ,qtip:"remove all files"
+      // ,handler:function() {this.load({params:{cmd:"removeall"}});}
+    // } ,
+    {
       id:"refresh"
       ,scope:store2
       ,qtip:"refresh"
-      ,handler:function() {this.load({params:{xaction:"read"}});}
+      ,handler:function() {this.load({params:{cmd:"get"}});}
     }]
     ,tbar:[{
       text:"upload to gridpanel"
@@ -197,12 +201,12 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader3 = new Ext.ux.upload.Uploader({
-    url:"/project/chewam/projects/Ext.ux.upload/example/php/upload3.php"
+    url:"/php-backend/upload.php?path=form"
     ,id:"uploader3"
-    ,swfUrl:"swf/swfupload.swf"
+    ,swfUrl:"/swf/swfupload.swf"
     ,disableLogPanel:true
     ,allowedFileTypes:"*.jpg;*.png;*.gif"
-    ,maxFileSize:1024
+    ,maxFileSize:100024
     ,maxFiles:1
     ,enableLogPanel:false
   });
@@ -217,18 +221,18 @@ Ext.onReady(function() {
   });
 
   var store3 = new Ext.data.JsonStore({
-    url:"php/getfiles.php",
-    root:"data",
+    url:"/php-backend/api.php",
+    //root:"data",
     autoLoad:true,
     baseParams:{
-      folder:"form"
-      ,xaction:"read"
+      path:"form"
+      ,cmd:"get"
     },
-    fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    fields: ['text', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
     ,listeners:{
       load:function(store, records) {
-	if (records.length)
-	  photo.update('<img height=71 width=88 src="uploads/form/'+records[0].get("name")+'?nocach='+Ext.id()+'" />');
+        if (records.length)
+            photo.update('<img height=71 width=88 src="/php-backend/sample_dir/form/'+records[0].get("text")+'?nocach='+Ext.id()+'" />');
       }
     }
   });
@@ -259,7 +263,7 @@ Ext.onReady(function() {
 	   ,plugins:[uploader3]
 	   ,listeners:{
 	     queuecomplete:function() {
-	       store3.load({params:{xaction:"read"}});
+	       store3.load({params:{cmd:"get"}});
 	     }
 	   }
 	 }]
@@ -291,8 +295,8 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader4 = new Ext.ux.upload.Uploader({
-    url:"/project/chewam/projects/Ext.ux.upload/example/php/upload4.php"
-    ,swfUrl:"swf/swfupload.swf"
+    url:"/php-backend/upload.php?path=border"
+    ,swfUrl:"/swf/swfupload.swf"
     ,allowedFileTypes:"*.*"
     ,maxFileSize:0
     ,maxFiles:10
@@ -322,20 +326,20 @@ Ext.onReady(function() {
   });
 
   var store4 = new Ext.data.JsonStore({
-    url:"php/getfiles.php",
-    root:"data",
+    url:"/php-backend/api.php",
+    //root:"data",
     autoLoad:true,
     baseParams:{
-      folder:"border"
-      ,xaction:"read"
+      path:"border"
+      ,cmd:"get"
     },
-    fields: ['name', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    fields: ['text', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
   });
 
   var tpl4 = new Ext.XTemplate(
     '<tpl for=".">',
-    '<div class="thumb-wrap" id="{name}">',
-    '<div class="thumb"><img src="http://cdn.iconfinder.net/data/icons/Basic_set2_Png/64/document.png" title="{name}"></div>',
+    '<div class="thumb-wrap" id="{text}">',
+    '<div class="thumb"><img src="http://cdn.iconfinder.net/data/icons/Basic_set2_Png/64/document.png" title="{text}"></div>',
     '<span class="x-editable">{shortName}</span></div>',
     '</tpl>',
     '<div class="x-clear"></div>'
@@ -352,7 +356,7 @@ Ext.onReady(function() {
     emptyText: 'No item to display',
     style:"border:1px solid #99BBE8",
     prepareData: function(data){
-      data.shortName = Ext.util.Format.ellipsis(data.name, 15);
+      data.shortName = Ext.util.Format.ellipsis(data.text, 15);
       data.sizeString = Ext.util.Format.fileSize(data.size);
       data.dateString = data.lastmod.format("m/d/Y g:i a");
       return data;
@@ -393,20 +397,22 @@ Ext.onReady(function() {
     title:'Simple BorderLayout',
     plugins:[uploader4],
     collapseFirst:false,
-    tools:[{
-      id:"gear"
-      ,scope:store4
-      ,qtip:"remove all files"
-      ,handler:function() {this.load({params:{xaction:"removeall"}});}
-    }, {
+    tools:[
+    // {
+      // id:"gear"
+      // ,scope:store4
+      // ,qtip:"remove all files"
+      // ,handler:function() {this.load({params:{cmd:"removeall"}});}
+    // }, 
+    {
       id:"refresh"
       ,scope:store4
       ,qtip:"refresh"
-      ,handler:function() {this.load({params:{xaction:"read"}});}
+      ,handler:function() {this.load({params:{cmd:"get"}});}
     }],
     listeners: {
       queuecomplete:function(uploader, target, file) {
-	store4.load({params:{xaction:"read"}});
+	store4.load({params:{cmd:"get"}});
       }
     },
     items:[dataview, eastPanel]
