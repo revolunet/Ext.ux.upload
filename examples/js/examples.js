@@ -17,7 +17,7 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader = new Ext.ux.upload.Uploader({
-    url:"/php-backend/upload.php?path=dataview" // Complete path is needed to make SWFUpload works
+    url:"/php-backend/api.php?cmd=upload&path=dataview" // Complete path is needed to make SWFUpload works
     ,swfUrl:"/swf/swfupload.swf"
     ,allowedFileTypes:"*.*"
     ,maxFileSize:0
@@ -127,7 +127,7 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader2 = new Ext.ux.upload.Uploader({
-    url:"/php-backend/upload.php?path=grid"
+    url:"/php-backend/api.php?cmd=upload&path=grid"
     ,swfUrl:"/swf/swfupload.swf"
     ,allowedFileTypes:"*.png;*.jpg;*.gif;*.jpeg"
     ,maxFileSize:1024
@@ -201,7 +201,7 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader3 = new Ext.ux.upload.Uploader({
-    url:"/php-backend/upload.php?path=form"
+    url:"/php-backend/api.php?cmd=upload&path=form"
     ,id:"uploader3"
     ,swfUrl:"/swf/swfupload.swf"
     ,disableLogPanel:true
@@ -295,7 +295,7 @@ Ext.onReady(function() {
    * *****************************************************************/
 
   var uploader4 = new Ext.ux.upload.Uploader({
-    url:"/php-backend/upload.php?path=border"
+    url:"/php-backend/api.php?cmd=upload&path=border"
     ,swfUrl:"/swf/swfupload.swf"
     ,allowedFileTypes:"*.*"
     ,maxFileSize:0
