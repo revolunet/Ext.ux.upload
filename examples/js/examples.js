@@ -62,7 +62,7 @@ Ext.onReady(function() {
       path:"dataview"
       ,cmd:"get"
     },
-    fields: ['text', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    fields: ['text', {name:'size', type: 'float'}, {name:'modified_time', type:'date', dateFormat:'timestamp'}]
   });
 
   var tpl = new Ext.XTemplate(
@@ -114,7 +114,7 @@ Ext.onReady(function() {
       prepareData: function(data) {
         data.shortName = Ext.util.Format.ellipsis(data.text, 15);
         data.sizeString = Ext.util.Format.fileSize(data.size);
-        data.dateString = data.lastmod.format("m/d/Y g:i a");
+        data.dateString = data.modified_time.format("m/d/Y g:i a");
         return data;
       }
     })
@@ -142,7 +142,7 @@ Ext.onReady(function() {
       path:"grid"
       ,cmd:"get"
     },
-    fields: ['text', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    fields: ['text', 'url', {name:'size', type: 'float'}, {name:'modified_time', type:'date', dateFormat:'timestamp'}]
   });
 
   var panel2 = new Ext.Panel({
@@ -162,7 +162,7 @@ Ext.onReady(function() {
       ,uploadLogPanelTarget:true
       ,columns:[
 	{dataIndex:"text", header:"File name", id:"text"}
-	,{dataIndex:"lastmod", header:"Last modification"}
+	,{dataIndex:"modified_time", header:"Last modification"}
       ]
       ,listeners: {
 	queuecomplete:function(uploader, target, file) {
@@ -228,7 +228,7 @@ Ext.onReady(function() {
       path:"form"
       ,cmd:"get"
     },
-    fields: ['text', 'url', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    fields: ['text', 'url', {name:'size', type: 'float'}, {name:'modified_time', type:'date', dateFormat:'timestamp'}]
     ,listeners:{
       load:function(store, records) {
         if (records.length)
@@ -333,7 +333,7 @@ Ext.onReady(function() {
       path:"border"
       ,cmd:"get"
     },
-    fields: ['text', {name:'size', type: 'float'}, {name:'lastmod', type:'date', dateFormat:'timestamp'}]
+    fields: ['text', {name:'size', type: 'float'}, {name:'modified_time', type:'date', dateFormat:'timestamp'}]
   });
 
   var tpl4 = new Ext.XTemplate(
@@ -358,7 +358,7 @@ Ext.onReady(function() {
     prepareData: function(data){
       data.shortName = Ext.util.Format.ellipsis(data.text, 15);
       data.sizeString = Ext.util.Format.fileSize(data.size);
-      data.dateString = data.lastmod.format("m/d/Y g:i a");
+      data.dateString = data.modified_time.format("m/d/Y g:i a");
       return data;
     }
   });
