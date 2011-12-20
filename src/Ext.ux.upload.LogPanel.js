@@ -17,7 +17,19 @@ Ext.ns('Ext.ux.upload');
  * @author Gary van Woerkens
  * @version 1.0
  */
-Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
+ 
+ Ext.define('Ext.ux.upload.LogPanel', {
+
+     extend: 'Ext.panel.Panel',
+
+     alias: 'widget.uploadlogspanel',
+
+     // requires: [
+     //     'Ext.XTemplate'
+     // ],
+
+ 
+// Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
   autoScroll:true
   ,cls:"x-upload-logpanel-toolbar"
@@ -25,9 +37,11 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
    * @cfg {Ext.Template} progressTpl
    * The {@link Ext.Template template} used to display file {@link Ext.ProgressBar progress} messages.
    */
-  ,progressTpl:new Ext.Template(
-    '<div ext:qtip="{msg}" class="x-progress-text-{type}">{text}</div>'
-  )
+   ,progressTpl: Ext.create('Ext.Template', '<div ext:qtip="{msg}" class="x-progress-text-{type}">{text}</div>')
+
+  // ,progressTpl:new Ext.Template(
+  //   '<div ext:qtip="{msg}" class="x-progress-text-{type}">{text}</div>'
+  // )
   /**
    * @cfg {String} lang
    * The language to display log panel messages (default to "en").
@@ -105,9 +119,9 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
    */
   ,bindContainer:function(logpanel, ctn, index) {
     Ext.apply(ctn, {
-      addProgress:this.addProgress.createDelegate(this)
-      ,updateProgress:this.updateProgress.createDelegate(this)
-      ,setStatus:this.setStatus.createDelegate(this)
+      addProgress:this.addProgress.bind(this)
+      ,updateProgress:this.updateProgress.bind(this)
+      ,setStatus:this.setStatus.bind(this)
     });
   }
 
@@ -131,6 +145,7 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
    * @param {Object} file
    */
   ,addProgress:function(file) {
+      console.log("addProgress", this, arguments);
     if (this.getProgress(file.id) === false) {
       var p = new Ext.ProgressBar({
 	text:this.progressTpl.apply({type:"loading", text:file.name})
@@ -210,4 +225,4 @@ Ext.ux.upload.LogPanel = Ext.extend(Ext.Panel, {
 
 });
 
-Ext.reg('uploadlogspanel', Ext.ux.upload.LogPanel);
+// Ext.reg('uploadlogspanel', Ext.ux.upload.LogPanel);

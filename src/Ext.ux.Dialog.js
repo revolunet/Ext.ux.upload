@@ -18,7 +18,11 @@ Ext.ns('Ext.ux');
  * @version 1.0
  */
 
-Ext.ux.Dialog = Ext.extend(Ext.Panel, {
+// Ext.ux.Dialog = Ext.extend(Ext.Panel, {
+Ext.define('Ext.ux.Dialog', {
+
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.dialogpanel',
 
   height:140
   ,width:350
@@ -71,4 +75,4 @@ Ext.ux.Dialog = Ext.extend(Ext.Panel, {
 
 });
 
-Ext.reg('dialogpanel', Ext.ux.Dialog);
+// Ext.reg('dialogpanel', Ext.ux.Dialog);

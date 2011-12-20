@@ -8,8 +8,6 @@
 ** Last update Fri Jul  2 15:51:49 2010 Gary van Woerkens
 */
 
-Ext.ns('Ext.ux.upload');
-
 /**
  * @class Ext.ux.upload.Uploader
  * @extends Ext.util.Observable
@@ -41,419 +39,436 @@ panel.render(Ext.getBody());
  * @version 1.0
  */
 
-/**
- * Create a new Uploader
- * @constructor
- * @param {Object} config The config object
- */
-Ext.ux.upload.Uploader = function(config) {
+// Ext.ns('Ext.ux');
 
-  Ext.apply(this, config);
+Ext.define('Ext.ux.upload.Uploader', {
 
-  this.connections = [];
-  this.queue = 0;
+    extend: 'Ext.util.Observable',
 
-  this.swfParams = config.swfParams || {};
-  Ext.apply(this.swfParams, {
-    url:this.url
-    ,swfUrl:this.swfUrl
-    ,allowedFileTypes:this.allowedFileTypes
-    ,maxFileSize:this.maxFileSize
-    ,maxFiles:this.maxFiles
-  });
-
-  this.html5Params = config.html5Params || {};
-  Ext.applyIf(this.html5Params, {
-    url:this.url
-    ,allowedFileTypes:this.allowedFileTypes
-    ,maxFileSize:this.maxFileSize
-    ,maxFiles:this.maxFiles
-  });
-
-//  if (this.enableLogPanel) this.createLogPanel();
-
-  this.addEvents(
+    //  dialogEl:null
     /**
-     * @event beforeupload Fires just before files upload. Return false to cancel upload.
-     * @param {Ext.ux.upload.SwfConnector} this
-     * @param {Number} selectedFilesCount
-     */
-    "beforeupload"
+    * @cfg String url
+    * The URL where files will be uploaded. Starts from www document root.
+    */
+    url:"",
     /**
-     * @event uploadstart
-     * @param {Ext.ux.upload.Uploader} this
-     * @param {Object} conn The upload connector
-     * @param {Object} file The uploaded file
-     */
-    ,"uploadstart"
+    * @cfg Boolean debug
+    * Enable debug (SWFupload)
+    */
+    debug:false,
     /**
-     * @event uploadcomplete Fires when a file has been uploaded.
-     * @param {Ext.ux.upload.Uploader} this
-     * @param {Object} conn The upload connector
-     * @param {Object} file The uploaded file
-     */
-    ,"uploadcomplete"
+    * @cfg String swfUrl
+    * The URL form which to request swfupload object.
+    */
+    swfUrl:"",
     /**
-     * @event queuecomplete
-     * @param {Ext.ux.upload.Uploader} this
-     * @param {Object} conn The upload connector
-     * @param {Object} file The uploaded file
-     */
-    ,"queuecomplete"
-  );
+    * @cfg Number maxFiles
+    * Maximum number of files to upload in a row.
+    */
+    maxFiles:5,
+    /**
+    * @cfg Number maxFileSize
+    * Maximum size of a file to upload.
+    */
+    maxFileSize:1024, // KB
+    /**
+    * @cfg String allowedFileTypes
+    * all types of file that can be uploaded
+    * (e.g., "*.png;*.jpg;*.gif").<br/>
+    * To allow all types of file to be uploaded use "*.*".
+    */
+    allowedFileTypes:"*.*",
+    /**
+    * @cfg Object swfParams
+    * To specify a specific config for SWFUpload.
+    */
+    swfParams:null,
+    /**
+    * @cfg Object html5Params
+    * To specify a specific config Html5 upload.
+    */
+    html5Params:null,
+    /**
+    * @cfg Boolean enableLogPanel
+    * True to display upload logs panel.
+    */
+    enableLogPanel:true,
+    /**
+    *
+    * @cfg path
+    */
+    path:"",
 
-  Ext.ux.upload.Uploader.superclass.constructor.call(this);
+    /**
+    * An array of opened connections.
+    * @type {Array}
+    * @property connections
+    */
 
-};
+    /**
+    * An array of files.
+    * @type {Array}
+    * @property queue
+    */
 
+    /**
+    * Create a new Uploader
+    * @constructor
+    * @param {Object} config The config object
+    */
+    constructor: function(config) {
+        Ext.apply(this, config);
 
-Ext.extend(Ext.ux.upload.Uploader, Ext.util.Observable, {
+        this.connections = [];
+        this.queue = 0;
 
-//  dialogEl:null
-  /**
-   * @cfg String url
-   * The URL where files will be uploaded. Starts from www document root.
-   */
-  url:""
-  /**
-   * @cfg Boolean debug
-   * Enable debug (SWFupload)
-   */
-  ,debug:false
-  /**
-   * @cfg String swfUrl
-   * The URL form which to request swfupload object.
-   */
-  ,swfUrl:""
-  /**
-   * @cfg Number maxFiles
-   * Maximum number of files to upload in a row.
-   */
-  ,maxFiles:5
-  /**
-   * @cfg Number maxFileSize
-   * Maximum size of a file to upload.
-   */
-  ,maxFileSize:1024 // KB
-  /**
-   * @cfg String allowedFileTypes
-   * all types of file that can be uploaded
-   * (e.g., "*.png;*.jpg;*.gif").<br/>
-   * To allow all types of file to be uploaded use "*.*".
-   */
-  ,allowedFileTypes:"*.*"
-  /**
-   * @cfg Object swfParams
-   * To specify a specific config for SWFUpload.
-   */
-  ,swfParams:null
-  /**
-   * @cfg Object html5Params
-   * To specify a specific config Html5 upload.
-   */
-  ,html5Params:null
-  /**
-   * @cfg Boolean enableLogPanel
-   * True to display upload logs panel.
-   */
-  ,enableLogPanel:true
-  /**
-   *
-   * @cfg path
-   */
-   ,path:""
+        this.swfParams = config.swfParams || {};
 
-  /**
-   * An array of opened connections.
-   * @type {Array}
-   * @property connections
-   */
-  /**
-   * An array of files.
-   * @type {Array}
-   * @property queue
-   */
+        Ext.apply(this.swfParams, {
+            url:this.url,
+            swfUrl:this.swfUrl,
+            allowedFileTypes:this.allowedFileTypes,
+            maxFileSize:this.maxFileSize,
+            maxFiles:this.maxFiles
+        });
 
-  ,init:function(cmp) {
-    var triggers = ["button", "menuitem"];
-    var dropZones = [
-      "dataview", "panel"
-      ,"imagebrowser", "toolbartabpanel"
-      ,"grid"
-    ];
-    var getUploader = function() {
-      return this;
-    };
-    var isTrigger = function(xtype) {
-      return triggers.indexOf(xtype) > -1;
-    };
-    var isDropZone = function(xtype) {
-      return dropZones.indexOf(xtype) > -1;
-    };
-    cmp.getUploader = getUploader.createDelegate(this);
-    cmp.relayEvents(this, ["queuecomplete", "beforeupload", "dragstart", "dragstop", "windragstart", "windragstop", "medialinkdrop"]);
-    var xtype = cmp.getXType();
-    if (isTrigger(xtype) !== false) {
-      cmp.on({
-	scope:this
-        ,afterrender:this.setTrigger
-      });
-    } else if (isDropZone(xtype) !== false) {
-      cmp.on({
-	scope:this
-	,render:this.setDropZone
-      });
-    }
-  }
+        this.html5Params = config.html5Params || {};
 
-  /**
-   * Initializes an upload drop zone for a component<br/>
-   * The component has to be in the dropzone list (dataview).
-   * @param {Ext.Component} cmp The component to bind the dropzone to.
-   */
-  ,setDropZone:function(cmp) {
-    if (cmp.uploadLogPanelTarget === true)
-      this.dialogEl = cmp.getEl();
-    var el = cmp.getXType() == "grid" ? cmp.view.scroller : cmp.body;
-    var config = {
-      el:el
-        ,path:this.path
-      ,listeners:{
-	scope:this
-	,beforeupload:this.onBeforeUpload
-	,start:this.onUploadStart
-	,progress:this.onUploadProgress
-	,complete:this.onUploadComplete
-	,error:this.onUploadError
-      }
-    };
-    Ext.apply(config, this.html5Params);
-    cmp.conn = new Ext.ux.upload.Html5Connector(config);
-    this.relayEvents(cmp.conn, ["dragstart", "dragstop", "windragstart", "windragstop", "medialinkdrop"]);
-    this.connections.push(cmp.conn);
-  }
+        Ext.applyIf(this.html5Params, {
+            url:this.url,
+            allowedFileTypes:this.allowedFileTypes,
+            maxFileSize:this.maxFileSize,
+            maxFiles:this.maxFiles
+        });
 
-  /**
-   * Initializes a swfupload button over a component.<br/>
-   * The component has to be in the trigger list (button, menu item).
-   * @param {Ext.Component} cmp The component to bind the trigger to.
-   */
-  ,setTrigger:function(cmp) {
-    var config, body, pos, btn;
-    if (cmp.dom) {
-      pos = cmp.getXY();
-      btn = cmp;
-    } else {
-      pos = cmp.getEl().getXY();
-      btn = cmp.getEl().child("td.x-btn-mc") || cmp.getEl();
-    }
-    var el = btn.insertHtml("beforeEnd",
-      '<div id="'+Ext.id()+'">'
-      + '<div id="'+Ext.id()+'" style="z-index:200;position:absolute;cursor:pointer;top:'+pos[1]+';left:'+pos[0]+'">'
-      + '<div id="'+Ext.id()+'"></div>'
-      + '</div>'
-      + '</div>'
-    , true);
-    el = el.first();
-    body = el.first();
-    config = {
-      el:el
-      ,body:body
-      ,debug:this.debug
-      ,path:this.path
-      ,listeners:{
-        scope:this
-        ,load:this.resizeTrigger.createDelegate(cmp)
-        ,beforeupload:this.onBeforeUpload
-        ,start:this.onUploadStart
-        ,progress:this.onUploadProgress
-        ,complete:this.onUploadComplete
-        ,error:this.onUploadError
-      }
-    };
-    Ext.apply(config, this.swfParams);
-  //  console.log(swfobject.hasFlashPlayerVersion("9.0.0"))
-   // if (swfobject.hasFlashPlayerVersion("9.0.0")) {
-        cmp.conn = new Ext.ux.upload.SwfConnector(config);
+        //  if (this.enableLogPanel) this.createLogPanel();
+
+        this.addEvents(
+            /**
+            * @event beforeupload Fires just before files upload. Return false to cancel upload.
+            * @param {Ext.ux.upload.SwfConnector} this
+            * @param {Number} selectedFilesCount
+            */
+            "beforeupload",
+            /**
+            * @event uploadstart
+            * @param {Ext.ux.upload.Uploader} this
+            * @param {Object} conn The upload connector
+            * @param {Object} file The uploaded file
+            */
+            "uploadstart",
+            /**
+            * @event uploadcomplete Fires when a file has been uploaded.
+            * @param {Ext.ux.upload.Uploader} this
+            * @param {Object} conn The upload connector
+            * @param {Object} file The uploaded file
+            */
+            "uploadcomplete",
+            /**
+            * @event queuecomplete
+            * @param {Ext.ux.upload.Uploader} this
+            * @param {Object} conn The upload connector
+            * @param {Object} file The uploaded file
+            */
+            "queuecomplete"
+        );
+
+        this.callParent();
+
+    },
+
+    init:function(cmp) {
+        var triggers = ["button", "menuitem"];
+        var dropZones = [
+            "dataview", "panel",
+            "imagebrowser", "toolbartabpanel",
+            "grid"
+        ];
+        var getUploader = function() {
+            return this;
+        };
+        var isTrigger = function(xtype) {
+            return triggers.indexOf(xtype) > -1;
+        };
+        var isDropZone = function(xtype) {
+            var isDropZone = false;
+            for (var i = 0, l = dropZones.length; i < l; i++) {
+                if (cmp.isXType(dropZones[i]))
+                    isDropZone = true;
+            }
+            return isDropZone;
+        };
+
+        cmp.getUploader = Ext.bind(getUploader, this);
+        cmp.relayEvents(this, ["uploadcomplete", "queuecomplete", "beforeupload", "dragstart", "dragstop", "windragstart", "windragstop", "medialinkdrop"]);
+        var xtype = cmp.getXType();
+        if (isTrigger(xtype) !== false) {
+            cmp.on({
+                scope:this,
+                afterrender:this.setTrigger
+            });
+        } else if (isDropZone(xtype) !== false) {
+            cmp.on({
+                scope:this,
+                afterrender:this.setDropZone
+            });
+        }
+    },
+
+    /**
+    * Initializes an upload drop zone for a component<br/>
+    * The component has to be in the dropzone list (dataview).
+    * @param {Ext.Component} cmp The component to bind the dropzone to.
+    */
+    setDropZone:function(cmp) {
+        if (cmp.uploadLogPanelTarget === true)
+            this.dialogEl = cmp.getEl();
+        var el = cmp.isXType('grid') ? cmp.body : cmp.view.scroller;
+        var config = {
+            el:el,
+            path:this.path,
+            listeners:{
+                scope:this,
+                beforeupload:this.onBeforeUpload,
+                start:this.onUploadStart,
+                progress:this.onUploadProgress,
+                complete:this.onUploadComplete,
+                error:this.onUploadError
+            }
+        };
+        Ext.apply(config, this.html5Params);
+        cmp.conn = Ext.create('Ext.ux.upload.Html5Connector', config);
+        this.relayEvents(cmp.conn, ["dragstart", "dragstop", "windragstart", "windragstop", "medialinkdrop"]);
+        this.connections.push(cmp.conn);
+    },
+
+    /**
+    * Initializes a swfupload button over a component.<br/>
+    * The component has to be in the trigger list (button, menu item).
+    * @param {Ext.Component} cmp The component to bind the trigger to.
+    */
+    setTrigger:function(cmp) {
+        var config, body, pos, btn;
+        if (cmp.dom) {
+            pos = cmp.getXY();
+            btn = cmp;
+        } else {
+            pos = cmp.getEl().getXY();
+            btn = cmp.getEl().child("td.x-btn-mc") || cmp.getEl();
+        }
+
+        var el = btn.insertHtml("beforeEnd",
+            '<div id="'+Ext.id()+'">'
+            + '<div id="'+Ext.id()+'" style="z-index:200;position:absolute;cursor:pointer;top:'+pos[1]+';left:'+pos[0]+'">'
+            + '<div id="'+Ext.id()+'"></div>'
+            + '</div>'
+            + '</div>'
+        , true);
+
+        el = el.first();
+        body = el.first();
+
+        config = {
+            el:el,
+            body:body,
+            debug:this.debug,
+            path:this.path,
+            listeners:{
+                scope:this,
+                load:Ext.bind(this.resizeTrigger, cmp),
+                beforeupload:this.onBeforeUpload,
+                start:this.onUploadStart,
+                progress:this.onUploadProgress,
+                complete:this.onUploadComplete,
+                error:this.onUploadError
+            }
+        };
+
+        Ext.apply(config, this.swfParams);
+        cmp.conn = Ext.create('Ext.ux.upload.SwfConnector', config);
         this.connections.push(cmp.conn);
         cmp.on({
             resize:this.resizeTrigger
         });
-   // }
-    //else {
-  //      cmp.conn = null;
-   // }
-    
-  }
 
-  /**
-   * Handles the trigger resize event to place the swfupload button over it.<br/>
-   * Scope is on trigger component.
-   */
-  ,resizeTrigger:function() {
-    if (this.rendered) {
-      var l = (this.dom) ? this : this.el;
-      var box = l.getBox();
-      if (this.conn) {
-          this.conn.el.setBox(box);
-          if (this.conn.loaded) {
-                this.conn.swf.setButtonDimensions(box.width, box.height);
-          }
-      }
-    }
-  }
+    },
 
-  /**
-   *
-   */
-  ,setLogFrame:function(frame) {
-    var panel = this.getLogPanel();
-    frame.add(panel);
-    frame.doLayout();
-    this.logPanel = frame;
-  }
-
-  ,createLogPanel:function() {
-    var frame = this.getLogFrame(),
-    panel = this.getLogPanel();
-    frame.add(panel);
-    frame.doLayout();
-    this.logPanel = frame;
-  }
-
-  /**
-   * Returns the panel to log upload events.
-   * @return {Object} panel {@link Ext.ux.Dialog} or {@link Ext.Window}
-   */
-  ,getLogPanel:function() {
-    return new Ext.ux.upload.LogPanel({
-      listeners:{scope:this, hide:function() {
-	  this.queue = 0;
-      }}
-    });
-  }
-
-  ,getLogFrame:function(panel) {
-    if (this.dialogEl) {
-      return new Ext.ux.Dialog({
-	height:140
-	,width:350
-	,layout:"fit"
-	,border:false
-	,closeAction:"hide"
-	,dialogEl:this.dialogEl
-      }).render(Ext.getBody());
-    } else {
-      var win = new Ext.Window({
-	height:200
-	,width:350
-	,layout:"fit"
-	,border:false
-	,closeAction:"hide"
-      });
-      win.close = win.hide;
-      return win;
-    }
-  }
-
-  /**
-   * Set the url where files have to be uploaded
-   * @param {String} url
-   */
-  ,setUploadUrl:function(url) {
-    this.url = url;
-    this.swfParams.url = url;
-    this.html5Params.url = url;
-    Ext.each(this.connections, function(conn) {
-        if (conn && conn.loaded ) {
-            //console.log(conn);
-            conn.url = url;
-            if (conn.swf) conn.swf.setUploadURL(url);
-            }
-    });
-  }
-
-  /**
-   * Set the url where files have to be uploaded
-   * @param {String} url
-   */
-  ,setPath:function(path) {
-    this.path = path;
-    this.swfParams.path = path;
-    this.html5Params.path = path;
-    Ext.each(this.connections, function(conn) {
-        if (conn && conn.loaded) {
-                conn.path = path;
+    /**
+    * Handles the trigger resize event to place the swfupload button over it.<br/>
+    * Scope is on trigger component.
+    */
+    resizeTrigger:function() {
+        if (this.rendered) {
+            var l = (this.dom) ? this : this.el;
+            var box = l.getBox();
+            if (this.conn) {
+                this.conn.el.setBox(box);
+                if (this.conn.loaded) {
+                    this.conn.swf.setButtonDimensions(box.width, box.height);
                 }
-    });
-  }
+            }
+        }
+    },
 
-  // HANDLERS
+    /**
+    *
+    */
+    setLogFrame:function(frame) {
+        var panel = this.getLogPanel();
+        frame.add(panel);
+        frame.doLayout();
+        this.logPanel = frame;
+    },
 
-  ,onBeforeUpload:function(conn, fileCount) {
-    if (!conn) return;
-    if (this.fireEvent("beforeupload", this, conn, fileCount) !== false) {
-        this.errors = 0;
-       this.queue += fileCount;
-      if (this.enableLogPanel && !this.logPanel)
-	this.createLogPanel();
-      return true;
-    } else return false;
-  }
+    createLogPanel:function() {
+        var frame = this.getLogFrame(),
+        panel = this.getLogPanel();
+        frame.add(panel);
+        frame.doLayout();
+        this.logPanel = frame;
+    },
 
-  ,onUploadStart:function(conn, file) {
-    if (!conn) return;
-    if (this.enableLogPanel) {
-      this.logPanel.show();
-      this.logPanel.addProgress(file);
-      this.logPanel.setStatus("loading", "en attente...");
+    /**
+    * Returns the panel to log upload events.
+    * @return {Object} panel {@link Ext.ux.Dialog} or {@link Ext.Window}
+    */
+    getLogPanel:function() {
+        return Ext.create('Ext.ux.upload.LogPanel', {
+            listeners:{scope:this, hide:function() {
+                this.queue = 0;
+            }}
+        });
+    },
+
+    getLogFrame:function(panel) {
+        if (this.dialogEl) {
+            return new Ext.ux.Dialog({
+                height:140,
+                width:350,
+                layout:"fit",
+                border:false,
+                closeAction:"hide",
+                dialogEl:this.dialogEl,
+            }).render(Ext.getBody());
+        } else {
+            var win = new Ext.Window({
+                height:200,
+                width:350,
+                layout:"fit",
+                border:false,
+                closeAction:"hide",
+            });
+            win.close = win.hide;
+            return win;
+        }
+    },
+
+    /**
+    * Set the url where files have to be uploaded
+    * @param {String} url
+    */
+    setUploadUrl:function(url) {
+        this.url = url;
+        this.swfParams.url = url;
+        this.html5Params.url = url;
+        Ext.each(this.connections, function(conn) {
+            if (conn && conn.loaded ) {
+                conn.url = url;
+                if (conn.swf) conn.swf.setUploadURL(url);
+            }
+        });
+    },
+
+    /**
+    * Set the url where files have to be uploaded
+    * @param {String} url
+    */
+    setPath:function(path) {
+        this.path = path;
+        this.swfParams.path = path;
+        this.html5Params.path = path;
+        Ext.each(this.connections, function(conn) {
+            if (conn && conn.loaded) {
+                conn.path = path;
+            }
+        });
+    },
+
+    // HANDLERS
+
+    onBeforeUpload:function(conn, fileCount) {
+        console.log("onBeforeUpload 1", this.queue);
+        if (!conn) return;
+        if (this.fireEvent("beforeupload", this, conn, fileCount) !== false) {
+            this.errors = 0;
+            this.queue += fileCount;
+            console.log("onBeforeUpload 2", this.queue);
+            if (this.enableLogPanel && !this.logPanel)
+                this.createLogPanel();
+            return true;
+        } else return false;
+    },
+
+    onUploadStart:function(conn, file) {
+        console.log("onUploadStart", this, arguments);
+        if (!conn) return;
+        if (this.enableLogPanel) {
+            this.logPanel.show();
+            this.logPanel.addProgress(file);
+            this.logPanel.setStatus("loading", "en attente...");
+        }
+        this.fireEvent("uploadstart", this, conn, file);
+    },
+
+    onUploadProgress:function(conn, file, uploaded) {
+        console.log("onUploadProgress", this, arguments);
+        if (this.enableLogPanel) {
+            this.logPanel.updateProgress({
+                file:file,
+                type:"loading",
+                progress:uploaded
+            });
+        }
+    },
+
+    onUploadComplete:function(conn, file) {
+        console.info("onUploadComplete 1", this, arguments);
+        if (file.filestatus !== -3) {
+            this.queue--;
+            console.log("onUploadComplete 2", this.queue, this, arguments);
+            this.fireEvent("uploadcomplete", this, conn, file);
+            if (this.enableLogPanel) {
+                this.logPanel.updateProgress({
+                    file:file,
+                    progress:1,
+                    type:"success"
+                });
+                if (this.queue === 0) {
+                    if (this.logPanel.close && !this.errors) {
+                        this.logPanel.close.defer(1000, this.logPanel);
+                    }
+                    this.fireEvent("queuecomplete", this, conn);
+                }
+            }
+        }
+    },
+
+    onUploadError:function(conn, file, msg) {
+        console.log("onUploadError", this, arguments);
+        this.queue--;
+        this.errors++;
+        if (this.enableLogPanel) {
+            if (!this.logPanel) this.createLogPanel();
+            this.logPanel.show();
+            if (file) {
+                this.logPanel.updateProgress({
+                    file:file,
+                    progress:0,
+                    type:"error",
+                    msg:msg
+                });
+            } else this.logPanel.setStatus("error", msg);
+        }
     }
-    this.fireEvent("uploadstart", this, conn, file);
-  }
-
-  ,onUploadProgress:function(conn, file, uploaded) {
-    if (this.enableLogPanel) {
-      this.logPanel.updateProgress({
-	file:file
-	,type:"loading"
-	,progress:uploaded
-      });
-    }
-  }
-
-  ,onUploadComplete:function(conn, file) {
-    if (this.enableLogPanel && file.filestatus !== -3) {
-      this.logPanel.updateProgress({
-	file:file
-	,progress:1
-	,type:"success"
-      });
-      this.queue--;
-      this.fireEvent("uploadcomplete", this, conn, file);
-      if (this.queue === 0) {
-	if (this.logPanel.close && !this.errors) {
-        this.logPanel.close.defer(1000, this.logPanel);
-	}
-	this.fireEvent("queuecomplete", this, conn);
-      }
-    }
-  }
-
-  ,onUploadError:function(conn, file, msg) {
-    this.queue--;
-    this.errors++;
-    if (this.enableLogPanel) {
-      if (!this.logPanel) this.createLogPanel();
-      this.logPanel.show();
-      if (file) {
-	this.logPanel.updateProgress({
-	  file:file
-	  ,progress:0
-	  ,type:"error"
-	  ,msg:msg
-	});
-      } else this.logPanel.setStatus("error", msg);
-    }
-  }
 
 });
