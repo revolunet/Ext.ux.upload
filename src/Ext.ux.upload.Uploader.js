@@ -397,12 +397,10 @@ Ext.define('Ext.ux.upload.Uploader', {
     // HANDLERS
 
     onBeforeUpload:function(conn, fileCount) {
-        console.log("onBeforeUpload 1", this.queue);
         if (!conn) return;
         if (this.fireEvent("beforeupload", this, conn, fileCount) !== false) {
             this.errors = 0;
             this.queue += fileCount;
-            console.log("onBeforeUpload 2", this.queue);
             if (this.enableLogPanel && !this.logPanel)
                 this.createLogPanel();
             return true;
@@ -410,7 +408,6 @@ Ext.define('Ext.ux.upload.Uploader', {
     },
 
     onUploadStart:function(conn, file) {
-        console.log("onUploadStart", this, arguments);
         if (!conn) return;
         if (this.enableLogPanel) {
             this.logPanel.show();
@@ -421,7 +418,6 @@ Ext.define('Ext.ux.upload.Uploader', {
     },
 
     onUploadProgress:function(conn, file, uploaded) {
-        console.log("onUploadProgress", this, arguments);
         if (this.enableLogPanel) {
             this.logPanel.updateProgress({
                 file:file,
@@ -432,10 +428,8 @@ Ext.define('Ext.ux.upload.Uploader', {
     },
 
     onUploadComplete:function(conn, file) {
-        console.info("onUploadComplete 1", this, arguments);
         if (file.filestatus !== -3) {
             this.queue--;
-            console.log("onUploadComplete 2", this.queue, this, arguments);
             this.fireEvent("uploadcomplete", this, conn, file);
             if (this.enableLogPanel) {
                 this.logPanel.updateProgress({
@@ -454,7 +448,6 @@ Ext.define('Ext.ux.upload.Uploader', {
     },
 
     onUploadError:function(conn, file, msg) {
-        console.log("onUploadError", this, arguments);
         this.queue--;
         this.errors++;
         if (this.enableLogPanel) {

@@ -168,7 +168,6 @@ Ext.define('Ext.ux.upload.Html5Connector', {
 
     // private
     init:function() {
-        console.log("Html5Connector init", this, arguments);
         this.setWindowEvents();
 
         this.el.on({
@@ -202,7 +201,6 @@ Ext.define('Ext.ux.upload.Html5Connector', {
 
     // private
     setWindowEvents:function() {
-        console.log("setWindowEvents", this, arguments);
 
         Ext.getBody().on({
             scope:this,
@@ -232,7 +230,6 @@ Ext.define('Ext.ux.upload.Html5Connector', {
 
     // private
     onFilesDrop:function(e) {
-        console.log("onFilesDrop", this, arguments);
         e.stopPropagation();
         e.preventDefault();
         var mediaLink = e.browserEvent.dataTransfer.getData('Text');
@@ -257,7 +254,6 @@ Ext.define('Ext.ux.upload.Html5Connector', {
     * @param {Array} files Array of file objects.
     */
     uploadFiles:function(files, targetElement) {
-        console.log("uploadFiles", this, arguments);
         this.targetElement = targetElement;
         var tooManyFiles = files.length > this.maxFiles;
         if (tooManyFiles && this.maxFiles) {
@@ -333,26 +329,22 @@ Ext.define('Ext.ux.upload.Html5Connector', {
     // HANDLERS
 
     onUploadProgress:function(file, e) {
-        console.log("onUploadProgress", this, arguments);
         this.fireEvent("progress", this, file, e.loaded/e.total);
     },
 
     onUploadLoad:function(file, request, e) {
-        console.log("onUploadLoad", file, request);
         if (request.readyState === 4) {
             if (request.status === 500)
                 this.fireEvent("error", this, file, this.lang.serverError);
             else if (request.status === 404)
                 this.fireEvent("error", this, file, this.lang.serverError);
             else if (request.status === 200) {
-                console.log("XXX onUploadComplete", this, file, e.loaded/e.total);
                 this.fireEvent("complete", this, file, e.loaded/e.total);
             }
         }
     },
 
     onUploadError:function(file, msg) {
-        console.log("onUploadError", this, arguments);
         this.fireEvent("error", this, file, msg);
     }
 

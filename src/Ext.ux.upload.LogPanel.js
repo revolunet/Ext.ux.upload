@@ -145,7 +145,6 @@ Ext.ns('Ext.ux.upload');
    * @param {Object} file
    */
   ,addProgress:function(file) {
-      console.log("addProgress", this, arguments);
     if (this.getProgress(file.id) === false) {
       var p = new Ext.ProgressBar({
 	text:this.progressTpl.apply({type:"loading", text:file.name})
